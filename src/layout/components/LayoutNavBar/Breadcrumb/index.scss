@@ -1,0 +1,44 @@
+.breadcrumb-box {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-left: 15px;
+
+  .el-breadcrumb {
+    white-space: nowrap;
+
+    .el-breadcrumb__item {
+      position: relative;
+      float: none;
+
+      .item-no-icon {
+        transform: translateY(-3px);
+      }
+
+      .el-breadcrumb__inner {
+        display: inline-flex;
+        font-weight: normal !important;
+
+        .breadcrumb-icon {
+          margin-top: 1px;
+          margin-right: 6px;
+          font-size: 16px;
+        }
+
+        .breadcrumb-title {
+          margin-top: 2px;
+        }
+      }
+    }
+  }
+}
+
+.no-icon {
+  .el-breadcrumb {
+    .el-breadcrumb__item {
+      .item-no-icon {
+        transform: translateY(0);
+      }
+    }
+  }
+}

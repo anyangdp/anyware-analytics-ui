@@ -1,0 +1,59 @@
+<script setup lang="ts">
+import type { BreakPoint, GridItemProps } from '@/components/PureGrid/types/pureGrid.type'
+
+const props = withDefaults(defineProps<GridItemProps>(), {
+	offset: 0,
+	span: 1,
+	suffix: false,
+	xs: undefined,
+	sm: undefined,
+	md: undefined,
+	lg: undefined,
+	xl: undefined
+})
+
+const attrs = useAttrs() as { index: string }
+const isShow = ref(true)
+
+/**
+ * @description 注入断点
+ */
+const gap = inject('gap', 0)
+const cols = inject('cols', ref(4))
+const breakPoint = inject<Ref<BreakPoint>>('breakPoint', ref('xl'))
+const shouldHiddenIndex = inject<Ref<number>>('shouldHiddenIndex', ref(-1))
+const style = computed(() => {
+	let span = props[breakPoint.value]?.span ?? props.span
+	let offset = props[breakPoint.value]?.offset ?? props.offset
+	if (props.suffix) {
+		return {
+			gridColumnStart: cols.value - span - offset + 1,
+			gridColumnEnd: `span ${span + offset}`,
+			marginLeft: offset !== 0 ? `calc(((100% + ${gap}px) / ${span + offset}) * ${offset})` : 'unset'
+		}
+	} else {
+		return {
+			gridColumn: `span ${span + offset > cols.value ? cols.value : span + offset}/span ${span + offset > cols.value ? cols.value : span + offset}`,
+			marginLeft: offset !== 0 ? `calc(((100% + ${gap}px) / ${span + offset}) * ${offset})` : 'unset'
+		}
+	}
+})
+
+watch(
+	() => [shouldHiddenIndex.value, breakPoint.value],
+	n => {
+		if (!!attrs.index) {
+			isShow.value = !(n[0] !== -1 && parseInt(attrs.index) >= Number(n[0]))
+		}
+	},
+	{ immediate: true }
+)
+</script>
+
+<template>
+	<div v-show="isShow" :style="style">
+		<slot></slot>
+	</div>
+</template>
+
+<style scoped lang="scss"></style>

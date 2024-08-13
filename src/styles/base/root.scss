@@ -1,0 +1,46 @@
+:root {
+  --pure-color-white: #ffffff;
+  --pure-color-gray: rgb(0 0 0 / 65%);
+  --pure-bg-main-color: #f8f8f8;
+  --pure-bg-color: #f5f5ff;
+  --pure-border-color-light: #f1f2f3;
+  --pure-color-primary-lighter: #ecf5ff;
+  --pure-color-success-lighter: #f0f9eb;
+  --pure-color-warning-lighter: #fdf6ec;
+  --pure-color-danger-lighter: #fef0f0;
+  --pure-color-dark-hover: #0000001a;
+  --pure-color-menu-hover: rgba(0, 0, 0, 0.2);
+  --pure-color-user-hover: rgba(0, 0, 0, 0.04);
+  --pure-color-seting-main: #e9eef3;
+  --pure-color-seting-aside: #d3dce6;
+  --pure-color-seting-header: #b3c0d1;
+  --el-menu-level-padding: 30px;
+  --el-text-color-regular: rgba(0, 0, 0, .99) !important;
+  --pure-header-text-color: #303133;
+  --pure-header-text-color-regular: #606266;
+  --pure-base-box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+  --pure-base-padding: 20px;
+  --pure-base-transition-time: 0.3s;
+
+  // 布局默认样式
+  --pure-header-border-color: #e4e7ed;
+  //--pure-header-background: #2a2f36;
+  --pure-header-background: #001529;
+  --pure-header-logo-text-color: #303133;
+  --pure-header-logo-text-color-white: #ffffff;
+  --pure-header-text-color: #303133;
+  --pure-header-text-color-regular: #606266;
+  --pure-header-border-color: #e4e7ed;
+  --pure-nav-bar-height: 55px;
+  --pure-tabs-bar-height: 40px;
+  --pure-tabs-item-height: 40px;
+  --pure-aside-border-color: #e7e7e7;
+  --pure-menu-active-color: #189dff;
+  --pure-menu-color:#666666;
+  --pure-left-menu-width: 210px;
+  //--pure-left-menu-background: #f3f3f3;
+  --pure-left-menu-background: #ffffff;
+  --pure-app-footer-height: 40px;
+  --pure-el-tree-font-size: 12px;
+  --pure-el-tree-node-height: 25px;
+}

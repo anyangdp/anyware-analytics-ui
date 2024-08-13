@@ -1,0 +1,107 @@
+html {
+  // 1单位 = 0.25 * ${html font-size} = 1px 可知：将 html 的 font-size 应该为 4px 即可
+  font-size: 4px;
+}
+
+body{
+  font-size: 14px;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--next-bg-main-color);
+  overflow: hidden;
+  position: relative;
+}
+
+html.dark {
+  background: var(--dark-bg);
+}
+
+/* nprogress 进度条跟随主题颜色
+------------------------------- */
+#nprogress {
+  .bar {
+    background: var(--el-color-primary) !important;
+    z-index: 9999999 !important;
+  }
+}
+
+/* cursor 鼠标形状 */
+// 默认
+.cursor-default {
+  cursor: default !important;
+}
+
+// 帮助
+.cursor-help {
+  cursor: help !important;
+}
+
+// 手指
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+// 移动
+.cursor-move {
+  cursor: move !important;
+}
+
+/* 宽高 100% */
+.w100 {
+  width: 100% !important;
+}
+
+.h100 {
+  height: 100% !important;
+}
+
+.vh100 {
+  height: 100vh !important;
+}
+
+.max100vh {
+  max-height: 100vh !important;
+}
+
+.min100vh {
+  min-height: 100vh !important;
+}
+
+/* 颜色值 */
+.color-primary {
+  color: var(--el-color-primary);
+}
+
+.color-success {
+  color: var(--el-color-success);
+}
+
+.color-warning {
+  color: var(--el-color-warning);
+}
+
+.color-danger {
+  color: var(--el-color-danger);
+}
+
+.color-info {
+  color: var(--el-color-info);
+}
+
+/*flex 布局*/
+.flx-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

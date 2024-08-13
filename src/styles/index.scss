@@ -1,0 +1,11 @@
+// 重置样式
+@use '@unocss/reset/sanitize/sanitize.css' as *;
+
+// 引入变量集合
+@use "base/root.scss";
+
+// 引入 element 改变样式
+@use 'element/index.scss' as *;
+
+// 引入全局样式
+@use 'app.scss' as *;

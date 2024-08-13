@@ -1,0 +1,6 @@
+import 'virtual:uno.css'
+import '@/plugins/unocss/icons/icons.custom'
+import '@/plugins/unocss/icons/icons.antd'
+import '@/plugins/unocss/icons/icons.carbon'
+import '@/plugins/unocss/icons/icons.ep'
+import '@/plugins/unocss/icons/icons.td'
