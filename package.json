@@ -11,7 +11,6 @@
     "preview": "pnpm run build:dev && vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "preinstall": "npx only-allow pnpm",
     "icon": "esno ./scripts/icon.ts"
   },
   "dependencies": {
