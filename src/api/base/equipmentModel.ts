@@ -1,6 +1,11 @@
 ﻿import http from '@/plugins/axios/http'
 import type { ApiPageResult } from '@/plugins/axios/interfaces/http.interface'
-import type { EquipmentModelEditReq, EquipmentModelPageReq, EquipmentModelPageRes } from '@/api/base/interfaces/equipmentModel.interface'
+import type {
+	EquipmentModelEditReq,
+	EquipmentModelFileListRes,
+	EquipmentModelPageReq,
+	EquipmentModelPageRes
+} from '@/api/base/interfaces/equipmentModel.interface'
 
 /**
  * @description 分页获取列表
@@ -28,4 +33,12 @@ export const editRecord = (params: EquipmentModelEditReq) => {
  */
 export const delRecord = (id: number) => {
 	return http.post('/api/base/equipmentModel/delete', { id: id })
+}
+
+/**
+ * @description 获取资料列表
+ */
+export const getEquipmentModelFileList = (data: { id: number }) => {
+	console.log(data)
+	return http.get<EquipmentModelFileListRes[]>('/api/base/equipmentModel/listFile', data)
 }

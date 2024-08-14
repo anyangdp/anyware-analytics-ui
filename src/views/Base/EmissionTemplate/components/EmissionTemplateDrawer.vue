@@ -1,11 +1,11 @@
 ﻿<script setup lang="tsx">
 import type { FormInstance } from 'element-plus'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
+import { getEmissionIndicatorsList } from '@/api/base/emissionIndicators'
 import { MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 import type { EmissionTemplateDetailRes, EmissionTemplatePageRes } from '@/api/base/interfaces/emissionTemplate.interface'
-import { getEmissionIndicatorsList } from '@/api/base/emissionIndicators'
 
 /**
  * @description 初始化对象

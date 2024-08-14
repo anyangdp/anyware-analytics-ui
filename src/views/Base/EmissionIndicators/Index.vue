@@ -5,8 +5,8 @@ import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
+import { addRecord, delRecord, editRecord, getRecordPage } from '@/api/base/emissionIndicators'
 import EmissionIndicatorsDrawer from '@/views/Base/EmissionIndicators/components/EmissionIndicatorsDrawer.vue'
-import { addRecord, delRecord, editRecord, getEmissionMethodList, getRecordPage } from '@/api/base/emissionIndicators'
 import type { EmissionIndicatorsPageRes, EmissionMethodListRes } from '@/api/base/interfaces/emissionIndicators.interface'
 
 /**
