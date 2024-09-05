@@ -18,7 +18,7 @@ const authStore = useAuthorStore()
 const globalStore = useGlobalStore()
 const title = import.meta.env.VITE_APP_TITLE
 const subMenuList = ref<AuthorMenuTree[]>([])
-const menuList = computed(() => authStore.authMenuList)
+const menuList = computed(() => authStore.getMenuList)
 const accordion = computed(() => globalStore.accordion)
 const isCollapse = computed(() => globalStore.isCollapse)
 const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string)

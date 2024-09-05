@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { cloneDeep } from 'lodash-es'
 import type { RouteRecordRaw } from 'vue-router'
 import type { AuthorState } from '@/stores/interfaces/author.interface'
-import { constantRouterMap } from '@/router/modules/constantRoutes'
+import { constantBusinessRouterMap, constantRouterMap } from '@/router/modules/constantRoutes'
 import type { AuthorMenuTree } from '@/api/system/interfaces/author.interface'
 import { generateRouter, setAddRoute } from '@/router/modules/dynamicRoutes'
 
@@ -11,37 +11,36 @@ import { generateRouter, setAddRoute } from '@/router/modules/dynamicRoutes'
  */
 export const useAuthorStore = defineStore('pure-author', {
 	state: (): AuthorState => ({
-		authButtonList: [],
-		authMenuList: [],
 		routers: [],
 		addRouters: [],
+		menuList: [],
 		isAddRouters: false
 	}),
 	getters: {
-		getButtonList(): string[] {
-			return this.authButtonList
-		},
-		getMenuList(): AuthorMenuTree[] {
-			return this.authMenuList
-		},
 		getRouters(): RouteRecordRaw[] {
 			return this.routers
 		},
 		getAddRouters(): RouteRecordRaw[] {
 			return this.addRouters
 		},
+		getMenuList(): AuthorMenuTree[] {
+			return this.menuList
+		},
 		getIsAddRouters(): boolean {
 			return this.isAddRouters
-		},
-		getBreadcrumbList(): { [key: string]: any } {
-			return getAllBreadcrumbList(this.authMenuList)
 		}
 	},
 	actions: {
 		InitRouters(): Promise<unknown> {
 			return new Promise<void>(resolve => {
-				let routerMap: RouteRecordRaw[]
-				routerMap = generateRouter(this.authMenuList)
+				// 获取静态路由
+				let routerMap: RouteRecordRaw[] = cloneDeep(constantBusinessRouterMap)
+
+				// 渲染静态菜单
+				this.menuList = cloneDeep(routerMap)
+
+				// 渲染菜单的所有路由
+				this.routers = cloneDeep(constantRouterMap).concat(cloneDeep(constantBusinessRouterMap)).concat(routerMap)
 
 				// 动态路由，404一定要放到最后面
 				this.addRouters = routerMap.concat([
@@ -56,9 +55,6 @@ export const useAuthorStore = defineStore('pure-author', {
 					}
 				])
 
-				// 渲染菜单的所有路由
-				this.routers = cloneDeep(constantRouterMap).concat(routerMap)
-
 				// 增加路由
 				setAddRoute(this.addRouters)
 				this.setIsAddRouters(true)
@@ -68,18 +64,12 @@ export const useAuthorStore = defineStore('pure-author', {
 		setIsAddRouters(state: boolean): void {
 			this.isAddRouters = state
 		},
-		setMenuList(state: AuthorMenuTree[]): void {
-			this.authMenuList = state
-		},
-		setButtonList(state: string[]) {
-			this.authButtonList = state
-		},
 		clear() {
 			this.$reset()
 		}
 	},
 	persist: {
-		paths: ['routers', 'addRouters', 'authMenuList', 'authButtonList']
+		paths: ['routers', 'addRouters', 'menuList']
 	}
 })
 
@@ -87,7 +77,9 @@ export const useAuthorStore = defineStore('pure-author', {
  * @description 获取所有面包屑导航列表
  * @returns {{ [key: string]: any; }}
  */
-const getAllBreadcrumbList = (menuList: AuthorMenuTree[], parent = [], result: { [key: string]: any } = {}): { [key: string]: any } => {
+const getAllBreadcrumbList = (menuList: AuthorMenuTree[], parent = [], result: { [key: string]: any } = {}): {
+	[key: string]: any
+} => {
 	for (const item of menuList) {
 		result[item.path ?? ''] = [...parent, item]
 		if (item.children) getAllBreadcrumbList(item.children, result[item.path ?? ''], result)

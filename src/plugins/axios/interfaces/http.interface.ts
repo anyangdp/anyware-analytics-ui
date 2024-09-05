@@ -1,17 +1,16 @@
+export interface Error {
+  code: number,
+  message: string,
+  enMessage: string
+}
 /**
- * @description 请求响应参数(不包含 data)
- * @param code ==> 状态码
- * @param message ==> 错误消息
- * @param type ==> 类型：success、warning、error
- * @param success ==> 状态
- * @param time ==> 时间
+ * @description
+ * @param error ==> 错误消息对象
+ * @param result ==> 接口操作结果
  */
 export interface ApiResult {
-  code: number
-  message: string
-  type: string
-  success?: boolean
-  time: string
+  error?: Error
+  result: boolean
 }
 
 /**
@@ -19,7 +18,7 @@ export interface ApiResult {
  * @param result ==> 具体数据
  */
 export interface ApiResultResultData<T = any> extends ApiResult {
-  result: T
+  data?: T
 }
 
 /**

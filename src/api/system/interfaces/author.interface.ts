@@ -5,37 +5,11 @@ export interface LoginReq {
 	/**
 	 * 账号
 	 */
-	account: string
+	username: string
 	/**
 	 * 密码
 	 */
 	password: string
-	/**
-	 * 验证码
-	 */
-	code: string
-}
-
-/**
- * @description 登录接口返回参数
- */
-export interface LoginRes {
-	/**
-	 * token
-	 */
-	accessToken: string
-	/**
-	 * token过期时间
-	 */
-	accessTokenExpires: string
-	/**
-	 * 刷新 token
-	 */
-	refreshToken: string
-	/**
-	 * 当前用户 id
-	 */
-	userId: number
 }
 
 /**
@@ -52,66 +26,36 @@ export interface CaptchaRes {
 	img: string
 }
 
+export interface UserRes {
+	id: string
+	username: string
+	password: string
+	nickname: string
+	avatar: string
+}
+
+/**
+ * 租户资产（数据权限）
+ */
+export interface TenantResource {
+	tenantId: string
+	type: string
+	resourceId: string
+}
+
+export interface GrantedAuthority{
+	authority: string
+}
+
 /**
  * @description 当前登录用户信息
  */
 export interface CurrentUserInfoRes {
-	/**
-	 * 用户 id
-	 */
-	id: number
-	/**
-	 * 账号名称
-	 */
-	account?: string | null
-	/**
-	 * 真实姓名
-	 */
-	realName?: string | null
-	/**
-	 * 账号类型
-	 */
-	accountType?: number | null
-	/**
-	 * 头像
-	 */
-	avatar?: string | null
-	/**
-	 * 个人简介
-	 */
-	introduction?: string | null
-	/**
-	 * 地址
-	 */
-	address?: string | null
-	/**
-	 * 电子签名
-	 */
-	signature?: string | null
-	/**
-	 * 机构Id
-	 */
-	orgId?: number | null
-	/**
-	 * 机构名称
-	 */
-	orgName?: string | null
-	/**
-	 * 机构类型
-	 */
-	orgType?: string | null
-	/**
-	 * 职位名称
-	 */
-	posName?: string | null
-	/**
-	 * 按钮权限集合
-	 */
-	buttons?: Array<string> | null
-	/**
-	 * 菜单集合
-	 */
-	menuTrees?: Array<AuthorMenuTree> | null
+	resources?: Array<TenantResource>
+	authorities?: Array<GrantedAuthority>
+	role?: Array<string>
+	user: UserRes
+	test: string
 }
 
 /**

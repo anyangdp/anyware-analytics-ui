@@ -1,7 +1,6 @@
 import router from '@/router'
 import { defineStore } from 'pinia'
 import { getUserInfo } from '@/api/system/author'
-import { getAllDictList } from '@/api/system/dict'
 import { useTabsStore } from '@/stores/modules/tabs'
 import { useAuthorStore } from '@/stores/modules/author'
 import { LOGIN_URL } from '@/recursos/constantes/app.constant'
@@ -16,20 +15,12 @@ export const useUserStore = defineStore('pure-user', {
 		return {
 			userInfo: undefined,
 			token: '',
-			refreshToken: '',
-			tokenExpires: '',
 			dictList: []
 		}
 	},
 	getters: {
 		getToken(): string {
 			return this.token
-		},
-		getTokenExpires(): string {
-			return this.tokenExpires
-		},
-		getRefreshToke(): string {
-			return this.refreshToken
 		},
 		getUserInfo(): UserInfoProps | undefined {
 			return this.userInfo
@@ -39,32 +30,20 @@ export const useUserStore = defineStore('pure-user', {
 		setToken(token: string) {
 			this.token = token
 		},
-		setTokenExpires(tokenExpires: string) {
-			this.tokenExpires = tokenExpires
-		},
-		setRefreshToken(refreshToken: string) {
-			this.refreshToken = refreshToken
-		},
 		setUserInfo(info: UserInfoProps | undefined) {
 			this.userInfo = info
 		},
 		async setUserAuthor() {
-			const { result } = await getUserInfo()
-			const { id, avatar, buttons, realName, menuTrees } = result
+			const { user } = await getUserInfo()
 			this.setUserInfo({
-				userId: id,
-				avatar: avatar ?? '',
-				name: realName ?? ''
+				id: user.id,
+				avatar: user.avatar ?? '',
+				username: user.username ?? '',
+				nickname: user.nickname ?? ''
 			})
 
 			// 设置菜单、按钮权限信息
 			const authorStore = useAuthorStore()
-			authorStore.setButtonList(buttons ?? [])
-			authorStore.setMenuList(menuTrees ?? [])
-		},
-		async setDictList() {
-			const { result } = await getAllDictList()
-			this.dictList = result
 		},
 		getDictItemByVal(typePCode: string, val: string) {
 			if (val) {

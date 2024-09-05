@@ -54,3 +54,26 @@ export const constantRouterMap: RouteRecordRaw[] = [
 		]
 	}
 ]
+
+/**
+ * @description 定义业务路由
+ */
+export const constantBusinessRouterMap: RouteRecordRaw[] = [{
+	path: '/dashboard',
+	component: Layout,
+	redirect: '/dashboard/home',
+	name: 'Dashboard',
+	meta: {
+		title: '首页',
+		icon: 'dashboard',
+		noCache: true
+	},
+	children: [
+		{
+			path: '/home',
+			component: () => import('@/views/Home/Index.vue'),
+			name: 'Home',
+			meta: { title: '首页' }
+		}
+	]
+}]

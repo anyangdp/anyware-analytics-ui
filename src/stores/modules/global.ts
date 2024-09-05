@@ -19,11 +19,11 @@ export const useGlobalStore = defineStore('pure-global', {
 		// 菜单手风琴
 		accordion: true,
 		// 面包屑导航
-		breadcrumb: true,
+		breadcrumb: false,
 		// 面包屑导航图标
 		breadcrumbIcon: false,
 		// 标签页
-		tabs: true,
+		tabs: false,
 		// 标签页图标
 		tabsIcon: false,
 		// 页脚

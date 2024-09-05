@@ -23,12 +23,12 @@ const colorIcon = computed(() => {
  * @description 计算对象
  */
 const breadcrumbList = computed(() => {
-	let breadcrumbData = authorStore.getBreadcrumbList[route.matched[route.matched.length - 1].path] ?? []
+	// let breadcrumbData = authorStore.getBreadcrumbList[route.matched[route.matched.length - 1].path] ?? []
 	// 不需要首页面包屑可删除以下判断
 	/*  if (breadcrumbData[0].path !== HOME_URL) {
       breadcrumbData = [{path: HOME_URL, meta: {icon: "HomeFilled", title: "首页"}}, ...breadcrumbData];
     }*/
-	return breadcrumbData
+	return []
 })
 
 /**
