@@ -62,6 +62,13 @@ const selectAttr = computed(() => {
 const removeTag = (val: any): void => {
 	const row = tableRef.value?.tableData.find((item: any) => item[props.keywords.label] === val)
 	tableRef.value?.element?.toggleRowSelection(row, false)
+	if (Array.isArray(modelValue.value) && Array.isArray(state.showLabel)) {
+		modelValue.value = modelValue.value.filter(s => s != row[props.keywords.value])
+		state.showLabel = state.showLabel.filter(s => s != row[props.keywords.label])
+	} else {
+		modelValue.value = ''
+		state.showLabel = ''
+	}
 }
 
 /**
@@ -69,6 +76,13 @@ const removeTag = (val: any): void => {
  */
 const onClear = () => {
 	tableRef.value?.element?.clearSelection()
+	if (Array.isArray(modelValue.value) && Array.isArray(state.showLabel)) {
+		modelValue.value.length = 0
+		state.showLabel = []
+	} else {
+		modelValue.value = ''
+		state.showLabel = ''
+	}
 }
 
 /**
@@ -162,7 +176,7 @@ const onSure = () => {
 		placeholder="请选择"
 		:multiple="props.multiple"
 		:collapse-tags="props.multiple"
-		:max-collapse-tags="2"
+		:max-collapse-tags="5"
 		:value-key="props.keywords.value"
 		@remove-tag="removeTag"
 		@clear="onClear"
@@ -195,4 +209,8 @@ const onSure = () => {
 	</el-select>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.el-table__header-wrapper .el-checkbox) {
+	display: none;
+}
+</style>
