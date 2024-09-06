@@ -3,7 +3,7 @@ import type { EpPropMergeType } from 'element-plus/lib/utils'
 /**
  * @description 首页名称（默认）
  */
-export const HOME_TITLE: string = '一张图'
+export const HOME_TITLE: string = '控制台'
 
 /**
  * @description 首页地址（默认）

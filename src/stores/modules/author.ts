@@ -28,6 +28,9 @@ export const useAuthorStore = defineStore('pure-author', {
 		},
 		getIsAddRouters(): boolean {
 			return this.isAddRouters
+		},
+		getBreadcrumbList(): { [key: string]: any } {
+			return getAllBreadcrumbList(this.menuList)
 		}
 	},
 	actions: {

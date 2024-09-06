@@ -4,7 +4,7 @@ import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
-import { appStatusDic, MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
 import { addRecord, delRecord, editRecord, getRecordPage } from '@/api/base/emissionTemplate'
 import EmissionTemplateDrawer from '@/views/Base/EmissionTemplate/components/EmissionTemplateDrawer.vue'
 import type { EmissionTemplateDetailRes, EmissionTemplatePageRes } from '@/api/base/interfaces/emissionTemplate.interface'
@@ -27,7 +27,7 @@ const columns = reactive<ColumnProps<EmissionTemplatePageRes>[]>([
 	{ type: 'expand', label: '指标列表', width: 100 },
 	{ prop: 'name', label: '模板名称', search: { el: 'input' } },
 	{ prop: 'busType', label: '业务类型', enum: MonitorSiteTypeTypeDic, tag: true },
-	{ prop: 'status', label: '状态', tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', tag: true, enum: appActiveDic },
 	{ prop: 'sort', label: '排序' },
 	{
 		prop: 'createTime',

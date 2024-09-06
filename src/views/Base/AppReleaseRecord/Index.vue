@@ -3,7 +3,7 @@ import {
 	AppReleaseRecordAppTypeDic,
 	AppReleaseRecordUpdateTypeDic,
 	AppReleaseRecordVersionTypeDic,
-	appStatusDic
+	appActiveDic
 } from '@/recursos/dictionaries/app.dictionary'
 import { useHandleData } from '@/hooks/useHandleData'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
@@ -38,7 +38,7 @@ const columns = reactive<ColumnProps<AppReleaseRecordPageRes>[]>([
 	{ prop: 'versionStatus', label: '版本状态', width: 90, enum: AppReleaseRecordVersionTypeDic },
 	{ prop: 'publishTime', label: '发布时间', width: 150 },
 	{ prop: 'sort', label: '排序', width: 90 },
-	{ prop: 'status', label: '状态', width: 70, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 70, tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

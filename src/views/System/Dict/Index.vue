@@ -2,7 +2,7 @@
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
 import { useHandleData } from '@/hooks/useHandleData'
-import { appStatusDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import { SYS_DICT_AUTHOR } from '@/recursos/constantes/author.constant'
 import type { DictDataPageRes, DictTypePageRes } from '@/api/system/interfaces/dict.interface'
@@ -40,7 +40,7 @@ const columns = reactive<ColumnProps<DictTypePageRes>[]>([
 	{ type: 'index', label: '#', width: 80 },
 	{ prop: 'name', label: '字典名称', search: { el: 'input' } },
 	{ prop: 'code', label: '字典编码' },
-	{ prop: 'status', label: '状态', width: 70, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 70, tag: true, enum: appActiveDic },
 	{ prop: 'orderNo', label: '排序', width: 70 },
 	{
 		prop: 'createTime',
@@ -71,7 +71,7 @@ const columnsData = reactive<ColumnProps<DictDataPageRes>[]>([
 	},
 	{ prop: 'code', label: '编码', search: { el: 'input' } },
 	{ prop: 'name', label: '名称' },
-	{ prop: 'status', label: '状态', width: 70, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 70, tag: true, enum: appActiveDic },
 	{ prop: 'orderNo', label: '排序', width: 70 },
 	{
 		prop: 'createTime',

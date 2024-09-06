@@ -1,6 +1,6 @@
 ﻿<script setup lang="tsx">
 import { useHandleData } from '@/hooks/useHandleData'
-import { appStatusDic, MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
@@ -27,7 +27,7 @@ const columns = reactive<ColumnProps<MonitorSiteTypePageRes>[]>([
 	{ prop: 'name', label: '类型名称', search: { el: 'input' } },
 	{ prop: 'monitorSiteType', label: '类型标识', enum: MonitorSiteTypeTypeDic },
 	{ prop: 'sort', label: '排序', width: 140 },
-	{ prop: 'status', label: '状态', tag: true, enum: appStatusDic, width: 140 },
+	{ prop: 'status', label: '状态', tag: true, enum: appActiveDic, width: 140 },
 	{
 		prop: 'createTime',
 		label: '修改记录',

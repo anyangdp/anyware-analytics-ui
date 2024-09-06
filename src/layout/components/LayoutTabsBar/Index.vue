@@ -32,7 +32,7 @@ onMounted(() => {
  * @description 初始化 tab，生成需要固定的 tabs
  */
 const initTabs = () => {
-	authorStore.authMenuList.forEach(item => {
+	authorStore.menuList.forEach(item => {
 		if (item.children?.length)
 			item.children.forEach(childItem => {
 				if (childItem.meta?.isAffix && !childItem.meta?.isHide) {

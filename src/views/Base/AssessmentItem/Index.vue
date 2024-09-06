@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { useHandleData } from '@/hooks/useHandleData'
-import { appStatusDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import { BASE_ASSESSMENT_ITEM_AUTHOR } from '@/recursos/constantes/author.constant'
@@ -29,7 +29,7 @@ const columns = reactive<ColumnProps<AssessmentItemPageRes>[]>([
 	{ prop: 'assessmentDescription', label: '考核描述' },
 	{ prop: 'fullScore', label: '分值' },
 	{ prop: 'sort', label: '排序' },
-	{ prop: 'status', label: '状态', tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

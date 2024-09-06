@@ -7,7 +7,7 @@ import type { RolePageRes } from '@/api/system/interfaces/role.interface'
 import { addRole, delRole, editRole, getRolePage } from '@/api/system/role'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
-import { appStatusDic, roleDataScopeDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, roleDataScopeDic } from '@/recursos/dictionaries/app.dictionary'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 
 /**
@@ -29,7 +29,7 @@ const columns = reactive<ColumnProps<RolePageRes>[]>([
 	{ prop: 'code', label: '角色编码', search: { el: 'input' } },
 	// {prop: "dataScope", label: "数据范围", tag: true, enum: roleDataScope},
 	{ prop: 'orderNo', label: '排序', width: 80 },
-	{ prop: 'status', label: '状态', width: 100, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 100, tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

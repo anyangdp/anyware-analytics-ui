@@ -7,7 +7,7 @@ import { SYS_MENU_AUTHOR } from '@/recursos/constantes/author.constant'
 import { addMenu, delMenu, editMenu, listMenu } from '@/api/system/menu'
 import type { MenuListRes } from '@/api/system/interfaces/menu.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
-import { appStatusDic, menuTypeDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, menuTypeDic } from '@/recursos/dictionaries/app.dictionary'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 
@@ -52,7 +52,7 @@ const columns = reactive<ColumnProps<MenuListRes>[]>([
 	{ prop: 'component', label: '组件地址', width: 200 },
 	{ prop: 'permission', label: '权限标识', width: 200 },
 	{ prop: 'orderNo', label: '排序', width: 130 },
-	{ prop: 'status', label: '状态', width: 110, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 110, tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

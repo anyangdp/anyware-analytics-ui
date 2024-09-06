@@ -9,7 +9,7 @@ import { addOrg, delOrg, editOrg, getOrgTreeList } from '@/api/system/org'
 import type { OrgTreeListRes } from '@/api/system/interfaces/org.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
-import { appStatusDic, appTrueFalseDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, appTrueFalseDic } from '@/recursos/dictionaries/app.dictionary'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 
 /**
@@ -46,7 +46,7 @@ const columns = reactive<ColumnProps<OrgTreeListRes>[]>([
 		fieldNames: { label: 'value', value: 'code' }
 	},
 	{ prop: 'orderNo', label: '排序', width: 130 },
-	{ prop: 'status', label: '状态', width: 110, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 110, tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

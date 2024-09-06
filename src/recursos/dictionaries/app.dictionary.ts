@@ -1,9 +1,9 @@
 /**
  * @description 全局状态
  */
-export const appStatusDic = [
-	{ label: '启用', value: 1, tagType: 'success' },
-	{ label: '禁用', value: 0, tagType: 'danger' }
+export const appActiveDic = [
+	{ label: '启用', value: true, tagType: 'success' },
+	{ label: '禁用', value: false, tagType: 'danger' }
 ]
 
 /**

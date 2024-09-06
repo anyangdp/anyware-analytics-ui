@@ -2,7 +2,7 @@
 import { useHandleData } from '@/hooks/useHandleData'
 import PureTable from '@/components/PureTable/PureTable.vue'
 import PosDrawer from '@/views/System/Pos/components/PosDrawer.vue'
-import { appStatusDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 import { SYS_POS_AUTHOR } from '@/recursos/constantes/author.constant'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import { getPosPage, addPos, editPos, delPos } from '@/api/system/pos'
@@ -21,7 +21,7 @@ const columns = reactive<ColumnProps<PosPageRes>[]>([
 	{ prop: 'name', label: '职位名称', search: { el: 'input' } },
 	{ prop: 'code', label: '职位编号', search: { el: 'input' } },
 	{ prop: 'orderNo', label: '排序', width: 130 },
-	{ prop: 'status', label: '状态', width: 120, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 120, tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

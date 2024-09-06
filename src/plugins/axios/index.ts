@@ -44,7 +44,6 @@ axiosInstance.interceptors.request.use(
 		return whiteList.some(url => config.url?.endsWith(url))
 			? config
 			: new Promise(resolve => {
-				debugger
 				const token = userStore.getToken
 				if (token) {
 					config.headers!['Authorization'] = `Bearer ${token}`
@@ -82,29 +81,31 @@ axiosInstance.interceptors.response.use(
 	async (error: AxiosError<ApiResultResultData>) => {
 		// 处理 HTTP 网络错误
 		let message = ''
-
 		// HTTP 状态码
 		const status = error.response?.status
 		switch (status) {
 			case 400:
-				message = error.response?.data.message ?? ''
+				message = error.response?.data?.error?.message ?? '400错误'
 				break
 			case 401:
 				const userStore = useUserStore()
-				message = '登录失效，请重新登录'
+				message = error.response?.data?.error?.message ?? '登录失效，请重新登录'
 				await userStore.logout()
 				break
 			case 403:
-				message = '拒绝访问'
+				message = error.response?.data?.error?.message ?? '拒绝访问'
 				break
 			case 404:
-				message = '请求地址错误'
+				message = error.response?.data?.error?.message ?? '请求地址错误'
+				break
+			case 405:
+				message = error.response?.data?.error?.message ?? '请求方法错误'
 				break
 			case 500:
-				message = '服务器故障'
+				message = error.response?.data?.error?.message ?? '服务器故障'
 				break
 			default:
-				message = '网络连接故障'
+				message = error.response?.data?.error?.message ?? '网络连接故障'
 				break
 		}
 

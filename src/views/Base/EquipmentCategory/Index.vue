@@ -1,7 +1,7 @@
 ﻿<script setup lang="tsx">
 import { useHandleData } from '@/hooks/useHandleData'
 import { listEquipmentType } from '@/api/base/equipmentType'
-import { appStatusDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
@@ -35,7 +35,7 @@ const columns = reactive<ColumnProps<EquipmentCategoryPageRes>[]>([
 		fieldNames: { label: 'name', value: 'id' },
 		search: { el: 'select-v2' }
 	},
-	{ prop: 'status', label: '状态', width: 140, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 140, tag: true, enum: appActiveDic },
 	{ prop: 'sort', label: '排序', width: 160 },
 	{
 		prop: 'createTime',

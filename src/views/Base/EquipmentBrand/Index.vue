@@ -1,6 +1,6 @@
 ﻿<script setup lang="tsx">
 import { useHandleData } from '@/hooks/useHandleData'
-import { appStatusDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import type { EquipmentBrandPageRes } from '@/api/base/interfaces/equipmentBrand.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
@@ -25,7 +25,7 @@ const pureTable = ref<PureTableInstance>()
 const columns = reactive<ColumnProps<EquipmentBrandPageRes>[]>([
 	{ type: 'index', label: '#', width: 50 },
 	{ prop: 'name', label: '品牌名称', search: { el: 'input' } },
-	{ prop: 'status', label: '状态', tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', tag: true, enum: appActiveDic },
 	{ prop: 'sort', label: '排序' },
 	{
 		prop: 'createTime',

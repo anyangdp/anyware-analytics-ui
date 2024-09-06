@@ -12,7 +12,7 @@ const Layout = () => import('@/layout/Index.vue')
 export const constantRouterMap: RouteRecordRaw[] = [
 	{
 		path: '/',
-		name: '一张图',
+		name: '控制台',
 		redirect: HOME_URL,
 		meta: {
 			isKeepAlive: true
@@ -58,22 +58,90 @@ export const constantRouterMap: RouteRecordRaw[] = [
 /**
  * @description 定义业务路由
  */
-export const constantBusinessRouterMap: RouteRecordRaw[] = [{
-	path: '/dashboard',
-	component: Layout,
-	redirect: '/dashboard/home',
-	name: 'Dashboard',
-	meta: {
-		title: '首页',
-		icon: 'dashboard',
-		noCache: true
+export const constantBusinessRouterMap: RouteRecordRaw[] = [
+	{
+		path: '/dashboard',
+		component: Layout,
+		redirect: '/dashboard/home',
+		name: 'Dashboard',
+		meta: {
+			title: '首页',
+			icon: 'pi-ant-design:home-outlined',
+			noCache: true
+		},
+		children: [
+			{
+				path: '/dashboard/home',
+				component: () => import('@/views/Home/Index.vue'),
+				name: 'Home',
+				meta: { title: '首页' }
+			}
+		]
 	},
-	children: [
-		{
-			path: '/home',
-			component: () => import('@/views/Home/Index.vue'),
-			name: 'Home',
-			meta: { title: '首页' }
-		}
-	]
-}]
+	{
+		path: '/datasource',
+		component: Layout,
+		name: 'Etl',
+		meta: {
+			title: 'etl管理',
+			icon: 'pi-ant-design:database-filled',
+			noCache: true
+		},
+		children: [
+			{
+				path: '/datasource/home',
+				component: () => import('@/views/BigData/Datasource/Index.vue'),
+				name: 'DatasourceHome',
+				meta: { title: '数据源管理', icon: 'pi-ant-design:database-outlined'}
+			},
+			{
+				path: '/datasource/etl',
+				component: () => import('@/views/BigData/Etl/Index.vue'),
+				name: 'DatasourceEtl',
+				meta: { title: 'etl任务', icon: 'pi-ant-design:ordered-list-outlined' }
+			}
+		]
+	},
+	{
+		path: '/scheduler',
+		component: Layout,
+		name: 'TaskScheduler',
+		meta: {
+			title: '任务调度',
+			icon: 'pi-carbon:event-schedule',
+			noCache: true
+		},
+		children: [
+			{
+				path: '/scheduler/home',
+				component: () => import('@/views/Scheduler/Index.vue'),
+				name: 'Scheduler',
+				meta: { title: '调度器管理', icon: 'pi-carbon:batch-job' }
+			},
+			{
+				path: '/scheduler/task',
+				component: () => import('@/views/Scheduler/Task/Index.vue'),
+				name: 'Task',
+				meta: { title: '任务管理', icon: 'pi-carbon:batch-job-step' }
+			}
+		]
+	},
+	{
+		path: '/data',
+		component: Layout,
+		name: 'data',
+		meta: {
+			title: '数仓管理',
+			icon: 'pi-carbon:ibm-db2-warehouse',
+			noCache: true
+		},
+		children: [
+			{
+				path: '/data/warehouse/api',
+				component: () => import('@/views/BigData/DataWarehouse/Api/Index.vue'),
+				name: 'DataWareHouseApi',
+				meta: { title: 'api资产', icon: 'pi-ant-design:api-outlined' }
+			}
+		]
+	},
+]

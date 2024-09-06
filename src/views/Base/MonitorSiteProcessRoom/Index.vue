@@ -6,7 +6,7 @@ import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import ModifyRecord from '@/components/PureTable/components/ModifyRecord.vue'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
-import { appStatusDic, MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, MonitorSiteTypeTypeDic } from '@/recursos/dictionaries/app.dictionary'
 import { addRecord, delRecord, editRecord, getRecordPage } from '@/api/base/monitorSiteProcessRoom'
 import type { MonitorSiteProcessRoomPageRes } from '@/api/base/interfaces/monitorSiteProcessRoom.interface'
 import MonitorSiteProcessRoomDrawer from '@/views/Base/MonitorSiteProcessRoom/components/MonitorSiteProcessRoomDrawer.vue'
@@ -43,7 +43,7 @@ const columns = reactive<ColumnProps<MonitorSiteProcessRoomPageRes>[]>([
 		}
 	},
 	{ prop: 'sort', label: '排序' },
-	{ prop: 'status', label: '状态', width: 140, tag: true, enum: appStatusDic },
+	{ prop: 'status', label: '状态', width: 140, tag: true, enum: appActiveDic },
 	{
 		prop: 'createTime',
 		label: '修改记录',

@@ -84,7 +84,7 @@ const changeSubMenu = (item: AuthorMenuTree) => {
 		<!-- 二级侧边栏 -->
 		<el-aside :class="{ 'not-aside': !subMenuList.length }" :style="{ width: isCollapse ? '65px' : '210px' }">
 			<div class="logo flx-center">
-				<span v-show="subMenuList.length" class="logo-text">{{ isCollapse ? 'P' : title }}</span>
+				<span v-show="subMenuList.length" class="logo-text">{{ isCollapse ? '数据' : title }}</span>
 			</div>
 			<el-scrollbar>
 				<el-menu :router="false" :default-active="activeMenu" :collapse="isCollapse" :unique-opened="accordion" :collapse-transition="false">
