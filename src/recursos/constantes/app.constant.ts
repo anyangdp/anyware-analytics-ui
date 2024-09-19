@@ -34,3 +34,10 @@ export const FORM_LABEL_POSITION: EpPropMergeType<StringConstructor, 'top' | 'le
  * @description form 表单默认尺寸
  */
 export const FORM_SIZE: EpPropMergeType<StringConstructor, '' | 'small' | 'default' | 'large', unknown> | undefined = 'small'
+
+export const HTTP_METHOD = [
+	{ label: 'POST', value: 'POST' },
+	{ label: 'GET', value: 'GET' },
+	{ label: 'PUTTING', value: 'PUTTING' },
+	{ label: 'DELETING', value: 'DELETING' },
+]

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
-import { DATA_SOURCE_TYPE } from '@/recursos/constantes/bigdata.constant'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import type { BdDatasourceDTO } from '@/api/bigData/datasource/datasource.interface'
+import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
+import JsonEditorVue from 'json-editor-vue'
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 
 // 初始化对象
 const drawerVisible = ref(false)
@@ -13,21 +16,27 @@ const drawerProps = ref<DrawerProps<BdDatasourceDTO>>({
 	row: {}
 })
 
+const json = ref();
+
 // 验证
 const rules = reactive({
-	type: [{ required: true, message: '请选择数据源名称' }],
-	url: [{ required: true, message: '请输入输入源url' }]
+	type: [{ required: true, message: '请选择任务类型' }],
+	description: [{ required: true, message: '请输入名称描述' }]
 })
 
 // 接收父组件传过来的参数
 const acceptParams = (params: DrawerProps<BdDatasourceDTO>) => {
 	drawerProps.value = params
 	drawerVisible.value = true
+	json.value = JSON.parse(drawerProps.value.row!.configuration);
+	console.log(json.value)
 }
 
 // 提交数据（新增/编辑）
 const ruleFormRef = ref<FormInstance>()
 const handleSubmit = () => {
+	console.log("值：", drawerProps.value.row)
+	return;
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) return
 		try {
@@ -40,14 +49,13 @@ const handleSubmit = () => {
 		}
 	})
 }
-
 defineExpose({
 	acceptParams
 })
 </script>
 
 <template>
-	<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="450px" :title="`${drawerProps.title}数据源`">
+	<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="850px" :title="`${drawerProps.title}任务`">
 		<el-form
 			:label-position="FORM_LABEL_POSITION"
 			ref="ruleFormRef"
@@ -60,50 +68,23 @@ defineExpose({
 			<el-row :gutter="35">
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="名称" prop="description">
-						<el-input v-model="drawerProps.row!.description" placeholder="请填写数据源名称" clearable></el-input>
+						<el-input v-model="drawerProps.row!.description" placeholder="请填写任务名称" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="数据源类型" prop="type">
-						<el-select v-model="drawerProps.row!.type" placeholder="请选择数据源类型">
-              <el-option v-for="item in DATA_SOURCE_TYPE" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					<el-form-item label="任务类型" prop="type">
+						<el-select v-model="drawerProps.row!.type" placeholder="请选择任务类型">
+              <el-option v-for="item in ETL_TASK_TYPE" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="连接url" prop="url">
-						<el-input v-model="drawerProps.row!.url" placeholder="请填写连接url" clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="主机" prop="host">
-						<el-input v-model="drawerProps.row!.host" placeholder="请填写驱动" clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="端口号" prop="port">
-						<el-input v-model="drawerProps.row!.port" placeholder="请填写端口号" clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="驱动" prop="driver">
-						<el-input v-model="drawerProps.row!.driver" placeholder="请填写驱动" clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="用户名" prop="username">
-						<el-input v-model="drawerProps.row!.username" placeholder="请填写用户名" clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="密码" prop="password">
-						<el-input v-model="drawerProps.row!.password" placeholder="请填写密码" clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="配置" prop="configuration">
-						<el-input type="textarea" v-model="drawerProps.row!.configuration" placeholder="高级配置"
-											clearable></el-input>
+<!--						<JsonEditorVue-->
+<!--							v-model="drawerProps.row!.configuration"-->
+<!--							v-bind="{/* local props & attrs */}"-->
+<!--						/>-->
+						<vue-json-pretty :data="json" :editable="true"/>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">

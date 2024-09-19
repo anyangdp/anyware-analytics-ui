@@ -8,7 +8,7 @@ import type { PureTableInstance } from '@/components/PureTable/types/pureTable.t
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 import { addDatasource, delDatasource, editDatasource, getDatasourcePage } from '@/api/bigData/datasource/datasource'
 import DatasourceDrawer from '@/views/BigData/Datasource/component/DatasourceDrawer.vue'
-import { DataSourceTypeEnum } from '@/recursos/constantes/datasource.constant'
+import { DATA_SOURCE_TYPE } from '@/recursos/constantes/bigdata.constant'
 
 // PureTable 实例
 const initParam = reactive({})
@@ -17,7 +17,7 @@ const pureTable = ref<PureTableInstance>()
 // 表格配置项
 const columns = reactive<ColumnProps<BdDatasourceDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
-	{ prop: 'type', label: '数据源类型', enum: DataSourceTypeEnum, search: { el: 'select-v2'} },
+	{ prop: 'type', label: '数据源类型', enum: DATA_SOURCE_TYPE, search: { el: 'select-v2'} },
 	{ prop: 'description', label: '数据源说明', search: { el: 'input' } },
 	{ prop: 'host', label: 'ip', width: 130 },
 	{ prop: 'port', label: '端口', width: 130 },
