@@ -1,9 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-	<div>监控仪表盘</div>
-	<div>图表</div>
-	<div>快速上手</div>
+	<div>
+		监控仪表盘
+	</div>
 </template>
 
 <style scoped lang="scss"></style>

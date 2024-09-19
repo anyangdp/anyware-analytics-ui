@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
-import type { PosPageRes } from '@/api/system/interfaces/pos.interface'
+import { DataSourceTypeEnum } from '@/recursos/constantes/datasource.constant'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import type { BdDatasourceDTO } from '@/api/bigData/datasource/datasource.interface'
 
@@ -15,10 +15,8 @@ const drawerProps = ref<DrawerProps<BdDatasourceDTO>>({
 
 // 验证
 const rules = reactive({
-	name: [{ required: true, message: '请输入职位名称' }],
-	code: [{ required: true, message: '请输入职位编号' }],
-	orderNo: [{ required: true, message: '请输入排序' }],
-	status: [{ required: true, message: '请选择状态' }]
+	type: [{ required: true, message: '请选择数据源名称' }],
+	url: [{ required: true, message: '请输入输入源url' }]
 })
 
 // 接收父组件传过来的参数
@@ -43,6 +41,7 @@ const handleSubmit = () => {
 	})
 }
 
+console.log(Object.values(DataSourceTypeEnum))
 defineExpose({
 	acceptParams
 })
@@ -61,8 +60,15 @@ defineExpose({
 		>
 			<el-row :gutter="35">
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+					<el-form-item label="名称" prop="description">
+						<el-input v-model="drawerProps.row!.description" placeholder="请填写数据源名称" clearable></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="数据源类型" prop="type">
-						<el-input v-model="drawerProps.row!.type" placeholder="请填写数据源类型" clearable></el-input>
+						<el-select v-model="drawerProps.row!.type" placeholder="请选择数据源类型">
+              <el-option v-for="item in DataSourceTypeEnum" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -73,6 +79,11 @@ defineExpose({
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="主机" prop="host">
 						<el-input v-model="drawerProps.row!.host" placeholder="请填写驱动" clearable></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+					<el-form-item label="端口号" prop="port">
+						<el-input v-model="drawerProps.row!.port" placeholder="请填写端口号" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -90,11 +101,17 @@ defineExpose({
 						<el-input v-model="drawerProps.row!.password" placeholder="请填写密码" clearable></el-input>
 					</el-form-item>
 				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+					<el-form-item label="配置" prop="configuration">
+						<el-input type="textarea" v-model="drawerProps.row!.configuration" placeholder="高级配置"
+											clearable></el-input>
+					</el-form-item>
+				</el-col>
 				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 					<el-form-item label="状态" prop="status">
 						<el-radio-group v-model="drawerProps.row!.active">
-							<el-radio :label=true>启用</el-radio>
-							<el-radio :label=false>禁用</el-radio>
+							<el-radio :label="true">启用</el-radio>
+							<el-radio :label="false">禁用</el-radio>
 						</el-radio-group>
 					</el-form-item>
 				</el-col>

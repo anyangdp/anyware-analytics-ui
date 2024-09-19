@@ -8,6 +8,7 @@ import type { PureTableInstance } from '@/components/PureTable/types/pureTable.t
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 import { addDatasource, delDatasource, editDatasource, getDatasourcePage } from '@/api/bigData/datasource/datasource'
 import DatasourceDrawer from '@/views/BigData/Datasource/component/DatasourceDrawer.vue'
+import { DataSourceTypeEnum } from '@/recursos/constantes/datasource.constant'
 
 // PureTable 实例
 const initParam = reactive({})
@@ -16,17 +17,17 @@ const pureTable = ref<PureTableInstance>()
 // 表格配置项
 const columns = reactive<ColumnProps<BdDatasourceDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
-	{ prop: 'type', label: '数据源类型', search: { el: 'input' } },
+	{ prop: 'type', label: '数据源类型', enum: DataSourceTypeEnum, search: { el: 'select-v2'} },
 	{ prop: 'description', label: '数据源说明', search: { el: 'input' } },
-	{ prop: 'url', label: '连接url', width: 130 },
 	{ prop: 'host', label: 'ip', width: 130 },
 	{ prop: 'port', label: '端口', width: 130 },
 	{ prop: 'driver', label: '驱动', width: 130 },
 	{ prop: 'username', label: '用户名', width: 130 },
 	{ prop: 'password', label: '密码', width: 130 },
-	{ prop: 'configuration', label: '高级配置', width: 130 },
 	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
-	{ prop: 'operation', label: '操作', width: 130, fixed: 'right'}
+	{ prop: 'url', label: '连接url', width: 130 },
+	{ prop: 'configuration', label: '高级配置', width: 130 },
+	{ prop: 'operation', label: '操作', width: 200, fixed: 'right'}
 ])
 
 // 删除数据源
@@ -47,6 +48,9 @@ const openDrawer = (title: string, row: Partial<BdDatasourceDTO> = { active: tru
 	}
 	drawerRef.value?.acceptParams(params)
 }
+const connect = (id: string) => {
+	console.log("连通性测试")
+}
 </script>
 
 <template>
@@ -57,7 +61,7 @@ const openDrawer = (title: string, row: Partial<BdDatasourceDTO> = { active: tru
 				:columns="columns"
 				:request-api="getDatasourcePage"
 				:init-param="initParam"
-				:search-col="{ xs: 1, sm: 1, md: 2, lg: 7, xl: 7 }"
+				:search-col="{ xs: 1, sm: 1, md: 2, lg: 6, xl: 6 }"
 			>
 				<!-- 表格 header 按钮 -->
 				<template #tableHeader>
@@ -75,6 +79,12 @@ const openDrawer = (title: string, row: Partial<BdDatasourceDTO> = { active: tru
 							<pure-icon name="pi-carbon:edit"></pure-icon>
 						</template>
 						编辑
+					</el-button>
+					<el-button type="primary" link @click="connect(scope.row.id)">
+						<template #icon>
+							<pure-icon name="pi-carbon:connect"></pure-icon>
+						</template>
+						连通性测试
 					</el-button>
 					<el-button type="danger" link @click="deleteDatasource(scope.row)">
 						<template #icon>
