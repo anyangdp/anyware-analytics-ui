@@ -3,11 +3,15 @@ import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/modules/user'
 import type { AxiosInstance, AxiosError, AxiosResponse } from 'axios'
 import type { ApiResultResultData } from '@/plugins/axios/interfaces/http.interface'
+import { HOME_URL, LOGIN_URL } from '@/recursos/constantes/app.constant'
+import router from '@/router'
 
 /**
  * @description 是否刷新 token
  */
 let isRefreshing: boolean = false
+
+
 
 /**
  * @description 请求队列
@@ -63,7 +67,7 @@ axiosInstance.interceptors.request.use(
  * @description 响应拦截器
  */
 axiosInstance.interceptors.response.use(
-	(response: AxiosResponse) => {
+	async (response: AxiosResponse) => {
 		const res = response.data
 		if (res.result) {
 			//如果没有返回状态码，直接返回数据，针对于返回数据为 blob 类型
@@ -71,7 +75,7 @@ axiosInstance.interceptors.response.use(
 		} else {
 			if (res.error.code === 1002 || res.error.code === 1000){
 				ElMessage.error(res.error.message || "401错误")
-
+				router.push(LOGIN_URL)
 			} else {
 				ElMessage.error(res.error.message || "500错误，服务异常")
 			}

@@ -16,10 +16,9 @@ router.beforeEach(async (to, from, next) => {
 	// 当前用户信息
 	// 注意：在 beforeEach 中调用 pinia 存储的菜单状态是为了避免` Did you forget to install pinia?`这个bug
 	const { token } = storeToRefs(useUserStore())
-
 	// 判断当前登录的页面
 	if (to.path === '/login') {
-		if (token?.value) return next('/')
+		// if (token?.value) return next('/')
 		return next()
 	}
 
