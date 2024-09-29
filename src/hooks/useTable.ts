@@ -1,4 +1,4 @@
-import { reactive, computed, toRefs } from 'vue'
+import { computed, reactive, toRefs } from 'vue'
 import type { StateProps } from '@/hooks/interfaces/table.interface'
 import type { Pageable } from '@/components/PureTable/interfaces/pureTable.interface'
 
@@ -65,7 +65,6 @@ export const useTable = (
 		try {
 			// 先把初始化参数和分页参数放到总参数里面
 			Object.assign(state.totalParam, initParam, isPageable ? pageParam.value : {})
-			console.log("数据：", await api({ ...state.searchInitParam, ...state.totalParam }))
 			let result = await api({ ...state.searchInitParam, ...state.totalParam })
 			dataCallBack && (result = dataCallBack(result))
 			state.tableData = isPageable ? result.records : result
