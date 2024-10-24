@@ -29,17 +29,24 @@ export const editJobInfoDetails = (params: SchedulerJobInfoDTO) => {
 
 /**
  * @description 删除调度任务
- * @param jobName {SchedulerJobInfoDTO} 任务对象
+ * @param id {number} 任务id
  */
 export const delJobInfoDetails = (id: number) => {
 	return http.delete(`${prefix}/${id}`)
 }
 
 /**
- * @description 启用/暂停调度任务
- * @param jobName {SchedulerJobInfoDTO} 任务对象
+ * @description 暂停调度任务
+ * @param id {number} 任务id
  */
-export const activeJobInfoDetails = (id: number, active: boolean = false) => {
-	return http.get(`${prefix}/active/${id}/${active}`)
+export const pauseJobInfoDetails = (id: number) => {
+	return http.get(`${prefix}/active/${id}/false`)
+}
+/**
+ * @description 启用调度任务
+ * @param id {number} 任务id
+ */
+export const resumeJobInfoDetails = (id: number) => {
+	return http.get(`${prefix}/active/${id}/true`)
 }
 

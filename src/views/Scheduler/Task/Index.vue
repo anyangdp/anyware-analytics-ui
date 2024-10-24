@@ -9,10 +9,11 @@ import {
 	addJobInfoDetails,
 	delJobInfoDetails,
 	editJobInfoDetails,
-	getJobInfoPage
+	getJobInfoPage, pauseJobInfoDetails, resumeJobInfoDetails
 } from '@/api/scheduler/JobInfo'
 import JobInfoDetailDrawer from '@/views/Scheduler/Task/component/JobInfoDetailDrawer.vue'
 import { JOB_TYPE } from '@/recursos/constantes/scheduler.constant'
+import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 
 // PureTable 实例
 const initParam = reactive({})
@@ -26,6 +27,7 @@ const columns = reactive<ColumnProps<SchedulerJobInfoDTO>[]>([
 	{ prop: 'type', label: '类型', enum: JOB_TYPE },
 	{ prop: 'cron', label: '时间表达式' },
 	{ prop: 'className', label: '执行类' },
+	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
 	{
 		prop: 'jobData',
 		label: '高级配置',
@@ -44,19 +46,19 @@ const columns = reactive<ColumnProps<SchedulerJobInfoDTO>[]>([
 
 // 删除任务
 const deleteTask = async (params: SchedulerJobInfoDTO) => {
-	await useHandleData(delJobInfoDetails, params, `删除【${params.description}】`)
+	await useHandleData(delJobInfoDetails, params.id, `删除【${params.description}】`)
 	pureTable.value?.getTableList()
 }
 
 // 暂停任务
 const pauseTask = async (params: SchedulerJobInfoDTO) => {
-	await useHandleData(delJobInfoDetails, params, `暂停【${params.description}】`)
+	await useHandleData(pauseJobInfoDetails, params.id, `暂停【${params.description}】`)
 	pureTable.value?.getTableList()
 }
 
 // 恢复任务
 const resumeTask = async (params: SchedulerJobInfoDTO) => {
-	await useHandleData(delJobInfoDetails, params, `恢复【${params.description}】`)
+	await useHandleData(resumeJobInfoDetails, params.id, `恢复【${params.description}】`)
 	pureTable.value?.getTableList()
 }
 
@@ -101,13 +103,13 @@ const openDrawer = (title: string, row: Partial<SchedulerJobInfoDTO> = { }) => {
 						</template>
 						编辑
 					</el-button>
-					<el-button type="primary" link @click="pauseTask(scope.row)">
+					<el-button v-if="scope.row.active" type="primary" link @click="pauseTask(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:pause-future"></pure-icon>
 						</template>
 						暂停
 					</el-button>
-					<el-button type="primary" link @click="resumeTask(scope.row)">
+					<el-button v-else type="primary" link @click="resumeTask(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:play-outline"></pure-icon>
 						</template>

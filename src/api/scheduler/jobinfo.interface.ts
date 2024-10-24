@@ -2,6 +2,7 @@ import type { AbstractPageDTO } from '@/api/core/AbstractPageDTO'
 import { map } from 'lodash-es'
 
 export interface SchedulerJobInfoDTO {
+	id?: string;
 	name?: string;
 	groupName?: string;
 	className?: string;

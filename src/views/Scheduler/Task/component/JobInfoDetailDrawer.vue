@@ -7,30 +7,64 @@ import type { SchedulerJobInfoDTO } from '@/api/scheduler/jobinfo.interface'
 
 // 初始化对象
 const drawerVisible = ref(false)
-const jobDataArray = ref<any>();
+const jobDataArray = ref<any>()
 const drawerProps = ref<DrawerProps<SchedulerJobInfoDTO>>({
 	isView: false,
 	title: '',
 	row: {}
 })
 
+const state = reactive({
+	value: drawerProps.value.row.cron,
+	error: ''
+})
+
+
 // 验证
 const rules = reactive({
 	name: [{ required: true, message: '请输入任务名称' }],
 	groupName: [{ required: true, message: '请选择任务组' }],
+	type: [{ required: true, message: '请选择任务类型' }],
 	className: [{ required: true, message: '请选择任务类' }],
 	description: [{ required: true, message: '请输入名称描述' }]
 })
-
 // 接收父组件传过来的参数
 const acceptParams = (params: DrawerProps<SchedulerJobInfoDTO>) => {
 	drawerProps.value = params
 	drawerVisible.value = true
 
-	jobDataArray.value = Object.entries(params.drawerProps.row.jobData || {}).map(([key, value]) => ({
+	jobDataArray.value = Object.entries(params.row.jobData || {}).map(([key, value]) => ({
 		key,
 		value
 	}))
+}
+
+const removeProperty = (index: number) => {
+	jobDataArray.value.splice(index, 1)
+}
+
+const addProperty = () =>{
+	// 向 jobDataArray 中添加一个新的空对象
+	jobDataArray.value.push({ key: '', value: '' });
+}
+const removeDuplicateKeys = () => {
+	const seen = new Set();
+	return jobDataArray.value.filter((item: any) => {
+		if (seen.has(item.key)) {
+			return false; // 如果已经存在，过滤掉
+		}
+		seen.add(item.key);
+		return true; // 保留第一次出现的项
+	})
+}
+const convertToJSON = (dataArray: any) => {
+	const jsonObject: any = {};
+	dataArray.forEach((item: any) => {
+		if (item.key) { // 确保 key 不为空
+			jsonObject[item.key] = item.value;
+		}
+	});
+	return jsonObject;
 }
 
 // 提交数据（新增/编辑）
@@ -39,6 +73,8 @@ const handleSubmit = () => {
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) return
 		try {
+			const uniqueData = removeDuplicateKeys();
+			drawerProps.value.row.jobData = convertToJSON(uniqueData);
 			await drawerProps.value.api!(drawerProps.value.row)
 			ElMessage.success({ message: `${drawerProps.value.title}任务成功！` })
 			drawerProps.value.getTableList!()
@@ -67,12 +103,12 @@ defineExpose({
 			<el-row :gutter="35">
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="任务名称" prop="name">
-						<el-input v-model="drawerProps.row!.name" placeholder="请填写url" clearable></el-input>
+						<el-input v-model="drawerProps.row!.name" placeholder="请填写任务名称" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="任务组" prop="groupName">
-						<el-input v-model="drawerProps.row!.groupName" placeholder="请填写url" clearable></el-input>
+						<el-input v-model="drawerProps.row!.groupName" placeholder="任务组名" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -91,13 +127,47 @@ defineExpose({
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="执行周期" prop="cron">
 						<el-input v-model="drawerProps.row!.cron" placeholder="执行周期" clearable></el-input>
+						<div>
+							<cron-element-plus
+								v-model="drawerProps.row.cron"
+								:button-props="{ type: 'primary' }"
+								locale="zh-cn"
+								format="quartz"
+								@error="state.error=$event" />
+						</div>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="高级配置" prop="jobData">
-						<template v-for="(item, index) in jobDataArray" :key="index">
-							<el-input v-model="item.key" placeholder="属性id" clearable></el-input> <el-input v-model="item.value" placeholder="属性值" clearable></el-input>
-						</template>
+						<div style="width: 100%;">
+							<template v-for="(item, index) in jobDataArray" :key="index">
+								<div style=" display: flex; justify-content: left">
+									<div style="width: 30%; margin-right: 10px;">
+										属性id:
+										<el-input v-model="item.key" placeholder="属性id" clearable></el-input>
+									</div>
+									<div style="width: 30%; margin-right: 10px;">
+										属性值:
+										<el-input v-model="item.value" placeholder="属性值" clearable></el-input>
+									</div>
+									<div style="width: 10%; display: grid">
+										<el-button type="danger" link @click="removeProperty(index)">
+											<template #icon>
+												<pure-icon name="pi-carbon:trash-can"></pure-icon>
+											</template>
+											移除
+										</el-button>
+									</div>
+								</div>
+								<el-divider />
+							</template>
+							<el-button type="primary" link @click="addProperty()">
+								<template #icon>
+									<pure-icon name="pi-carbon:add"></pure-icon>
+								</template>
+								添加属性
+							</el-button>
+						</div>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -114,4 +184,5 @@ defineExpose({
 	</el-drawer>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+</style>

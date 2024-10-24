@@ -5,6 +5,13 @@ import directives from '@/directives'
 import '@/router/modules/filterRoutes'
 import Vue3BaiduMapGL from 'vue3-baidu-map-gl'
 import PureIcon from '@/components/PureIcon/PureIcon.vue'
+import ElementPlus from 'element-plus'
+
+// registers the component globally
+// registered name: CronElementPlus
+
+import CronElementPlusPlugin, { CronElementPlus } from '@vue-js-cron/element-plus'
+
 
 import App from './App.vue'
 
@@ -16,6 +23,12 @@ import '@/styles/index.scss'
 
 // 引入 UnoCSS
 import '@/plugins/unocss'
+
+import 'element-plus/theme-chalk/index.css'
+
+import '@vue-js-cron/element-plus/dist/element-plus.css'
+
+
 
 // 引入本地 svg 图片注册
 import 'virtual:svg-icons-register'
@@ -47,6 +60,9 @@ const app = createApp(App)
 // 注册组件
 app
 	.component('PureIcon', PureIcon)
+	.use(ElementPlus)
+	.use(CronElementPlusPlugin)
+	.component('CronElementPlus', CronElementPlus)
 	.use(Vue3BaiduMapGL, {
 		ak: import.meta.env.VITE_BD_AK_KEY
 	})

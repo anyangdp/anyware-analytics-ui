@@ -16,6 +16,7 @@ declare module 'lodash-es'
 declare module 'sortablejs'
 declare module 'path-browserify'
 declare module '@wangeditor/editor-for-vue'
+declare module 'no-vue3-cron'
 
 /**
  * @description 定义公共接口
