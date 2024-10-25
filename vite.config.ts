@@ -62,6 +62,7 @@ export default defineConfig(config => {
 				'@': fileURLToPath(new URL('./src', import.meta.url))
 			}
 		},
+		base: env.VITE_PUBLIC_PATH,
 		server: {
 			// 使用 IP 能访问
 			host: '0.0.0.0',

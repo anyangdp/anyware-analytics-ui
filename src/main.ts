@@ -8,10 +8,6 @@ import PureIcon from '@/components/PureIcon/PureIcon.vue'
 import ElementPlus from 'element-plus'
 
 // registers the component globally
-// registered name: CronElementPlus
-
-import CronElementPlusPlugin, { CronElementPlus } from '@vue-js-cron/element-plus'
-
 
 import App from './App.vue'
 
@@ -61,8 +57,6 @@ const app = createApp(App)
 app
 	.component('PureIcon', PureIcon)
 	.use(ElementPlus)
-	.use(CronElementPlusPlugin)
-	.component('CronElementPlus', CronElementPlus)
 	.use(Vue3BaiduMapGL, {
 		ak: import.meta.env.VITE_BD_AK_KEY
 	})

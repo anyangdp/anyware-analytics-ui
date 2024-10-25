@@ -28,18 +28,6 @@ const columns = reactive<ColumnProps<SchedulerJobInfoDTO>[]>([
 	{ prop: 'cron', label: '时间表达式' },
 	{ prop: 'className', label: '执行类' },
 	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
-	{
-		prop: 'jobData',
-		label: '高级配置',
-		width: 100,
-		render: scope => (
-			<>
-				{
-					JSON.stringify(scope.row.jobData)
-				}
-			</>
-		)
-	},
 	{ prop: 'description', label: '任务说明', width: 150 },
 	{ prop: 'operation', label: '操作', width: 200, fixed: 'right' }
 ])

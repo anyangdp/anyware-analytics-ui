@@ -14,11 +14,6 @@ const drawerProps = ref<DrawerProps<SchedulerJobInfoDTO>>({
 	row: {}
 })
 
-const state = reactive({
-	value: drawerProps.value.row.cron,
-	error: ''
-})
-
 
 // 验证
 const rules = reactive({
@@ -127,14 +122,6 @@ defineExpose({
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="执行周期" prop="cron">
 						<el-input v-model="drawerProps.row!.cron" placeholder="执行周期" clearable></el-input>
-						<div>
-							<cron-element-plus
-								v-model="drawerProps.row.cron"
-								:button-props="{ type: 'primary' }"
-								locale="zh-cn"
-								format="quartz"
-								@error="state.error=$event" />
-						</div>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">

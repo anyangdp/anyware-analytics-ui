@@ -17,7 +17,7 @@ export const getJobInfoPage = (params: SchedulerJobInfoDTOPageDTO) => {
  * @description 新增调度任务
  */
 export const addJobInfoDetails = (params: SchedulerJobInfoDTO) => {
-	return http.post('${prefix}/create', params)
+	return http.post(`${prefix}/create`, params)
 }
 
 /**
