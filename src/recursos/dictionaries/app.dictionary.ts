@@ -114,3 +114,12 @@ export const MonitorSiteTypeTypeDic = [
 	{ label: '管点', value: 5, tagType: 'primary' },
 	{ label: '排口', value: 6, tagType: 'primary' }
 ]
+
+export const quartzTaskDic = [
+	{ label: '未定触发器', value: 'NONE', tagType: 'warning' },
+	{ label: '正常', value: 'NORMAL', tagType: 'success' },
+	{ label: '已暂停', value: 'PAUSED', tagType: 'danger' },
+	{ label: '已完成', value: 'COMPLETE', tagType: 'danger' },
+	{ label: '运行错误', value: 'ERROR', tagType: 'danger' },
+	{ label: '阻塞', value: 'BLOCKED', tagType: 'danger' },
+]

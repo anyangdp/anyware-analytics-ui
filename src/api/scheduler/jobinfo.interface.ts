@@ -13,5 +13,10 @@ export interface SchedulerJobInfoDTO {
 	sort: number;
 }
 
+export interface SchedulerDTO {
+	schedulerName?: string;
+	schedulerInstanceId?: string;
+}
+
 export interface SchedulerJobInfoDTOPageDTO extends SchedulerJobInfoDTO, AbstractPageDTO{
 }

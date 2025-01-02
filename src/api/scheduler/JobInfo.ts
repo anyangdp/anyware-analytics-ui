@@ -49,4 +49,10 @@ export const pauseJobInfoDetails = (id: number) => {
 export const resumeJobInfoDetails = (id: number) => {
 	return http.get(`${prefix}/active/${id}/true`)
 }
+/**
+ * @description 调度器详情
+ */
+export const schedulerDetail = () => {
+	return http.get(`${prefix}/scheduler`)
+}
 

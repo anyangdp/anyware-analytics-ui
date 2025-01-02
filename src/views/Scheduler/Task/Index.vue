@@ -13,7 +13,7 @@ import {
 } from '@/api/scheduler/JobInfo'
 import JobInfoDetailDrawer from '@/views/Scheduler/Task/component/JobInfoDetailDrawer.vue'
 import { JOB_TYPE } from '@/recursos/constantes/scheduler.constant'
-import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
+import { appActiveDic, quartzTaskDic } from '@/recursos/dictionaries/app.dictionary'
 
 // PureTable 实例
 const initParam = reactive({})
@@ -22,12 +22,12 @@ const pureTable = ref<PureTableInstance>()
 // 表格配置项
 const columns = reactive<ColumnProps<SchedulerJobInfoDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
-	{ prop: 'name', label: '任务名称' ,search: { el: 'input' }},
+	{ prop: 'name', label: '任务名称', search: { el: 'input' } },
 	{ prop: 'groupName', label: '任务组' },
 	{ prop: 'type', label: '类型', enum: JOB_TYPE },
 	{ prop: 'cron', label: '时间表达式' },
 	{ prop: 'className', label: '执行类' },
-	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
+	{ prop: 'status', label: '状态', width: 120, tag: true, enum: quartzTaskDic },
 	{ prop: 'description', label: '任务说明', width: 150 },
 	{ prop: 'operation', label: '操作', width: 200, fixed: 'right' }
 ])
@@ -52,7 +52,7 @@ const resumeTask = async (params: SchedulerJobInfoDTO) => {
 
 // 打开 drawer（新增、修改、查看）
 const drawerRef = ref<InstanceType<typeof JobInfoDetailDrawer> | null>(null)
-const openDrawer = (title: string, row: Partial<SchedulerJobInfoDTO> = { }) => {
+const openDrawer = (title: string, row: Partial<SchedulerJobInfoDTO> = {}) => {
 	const params: DrawerProps<SchedulerJobInfoDTO> = {
 		title,
 		isView: title === '查看',
@@ -91,13 +91,13 @@ const openDrawer = (title: string, row: Partial<SchedulerJobInfoDTO> = { }) => {
 						</template>
 						编辑
 					</el-button>
-					<el-button v-if="scope.row.active" type="primary" link @click="pauseTask(scope.row)">
+					<el-button v-if="scope.row.status === 'NORMAL'" type="primary" link @click="pauseTask(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:pause-future"></pure-icon>
 						</template>
 						暂停
 					</el-button>
-					<el-button v-else type="primary" link @click="resumeTask(scope.row)">
+					<el-button v-if="scope.row.status === 'PAUSED'" type="primary" link @click="resumeTask(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:play-outline"></pure-icon>
 						</template>
