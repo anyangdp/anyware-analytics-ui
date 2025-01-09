@@ -6,7 +6,13 @@ import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import type { BdDatasourceDTO } from '@/api/bigData/datasource/datasource.interface'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
-import { addDatasource, delDatasource, editDatasource, getDatasourcePage } from '@/api/bigData/datasource/datasource'
+import {
+	addDatasource,
+	connectTest,
+	delDatasource,
+	editDatasource,
+	getDatasourcePage
+} from '@/api/bigData/datasource/datasource'
 import DatasourceDrawer from '@/views/BigData/Datasource/component/DatasourceDrawer.vue'
 import { DATA_SOURCE_TYPE } from '@/recursos/constantes/bigdata.constant'
 
@@ -48,8 +54,9 @@ const openDrawer = (title: string, row: Partial<BdDatasourceDTO> = { active: tru
 	}
 	drawerRef.value?.acceptParams(params)
 }
-const connect = (id: string) => {
-	console.log("连通性测试")
+const connect = async (id: string) => {
+	await connectTest(id)
+	ElMessage.success("数据库连通正常")
 }
 </script>
 

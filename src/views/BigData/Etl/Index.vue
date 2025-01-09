@@ -20,7 +20,7 @@ const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ prop: 'type', label: 'etl类型', enum: ETL_TASK_TYPE, search: { el: 'select-v2'} },
 	{ prop: 'description', label: '任务说明', search: { el: 'input' } },
 	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
-	{ prop: 'configuration', label: '配置', width: 130 },
+	// { prop: 'configuration', label: '配置', width: 130 },
 	{ prop: 'operation', label: '操作', width: 200, fixed: 'right'}
 ])
 
@@ -42,6 +42,11 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: tr
 	}
 	drawerRef.value?.acceptParams(params)
 }
+let centerDialogVisible = ref(false);
+const view = (row) => {
+	centerDialogVisible.value = true
+}
+
 </script>
 
 <template>
@@ -71,6 +76,12 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: tr
 						</template>
 						编辑
 					</el-button>
+					<el-button type="primary" link @click="view(scope.row)">
+						<template #icon>
+							<pure-icon name="pi-carbon:view"></pure-icon>
+						</template>
+						查看
+					</el-button>
 					<el-button type="danger" link @click="deleteEtlTask(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:trash-can"></pure-icon>
@@ -81,6 +92,24 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: tr
 			</PureTable>
 			<EtlTaskInfoDrawer ref="drawerRef" />
 		</div>
+		<el-dialog
+			title="提示"
+			v-model="centerDialogVisible"
+			width="30%"
+			destroy-on-close
+			center
+		>
+			<span>需要注意在 Dialog 打开前是这条内容和下面的内容都是不会被渲染的</span>
+			<strong>额外的内容</strong>
+			<template #footer>
+    <span class="dialog-footer">
+      <el-button @click="centerDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="centerDialogVisible = false"
+			>确 定</el-button
+			>
+    </span>
+			</template>
+		</el-dialog>
 	</div>
 </template>
 

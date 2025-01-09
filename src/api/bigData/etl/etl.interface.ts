@@ -8,5 +8,22 @@ export interface BdEtlTaskInfoDTO {
 	active?: boolean
 }
 
+export interface EtlDataSourceConfiguration {
+	resourceId?: string;
+	type?: string;
+	name?: string;
+	condition?: string;
+	sql?: string
+	mode?: string
+	expands?: any;
+	columns?: string
+}
+
+export interface SingleEtlConfiguration {
+	source: EtlDataSourceConfiguration,
+	transform?: any
+	target: EtlDataSourceConfiguration
+}
+
 export interface BdEtlTaskInfoPageDTO extends BdEtlTaskInfoDTO, AbstractPageDTO{
 }

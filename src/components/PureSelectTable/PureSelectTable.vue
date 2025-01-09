@@ -18,11 +18,16 @@ const modelValue = defineModel()
 const tableRef = ref<PureTableInstance>()
 
 /**
+ * @description 抛出事件
+ */
+const emits = defineEmits(['selectionChange', 'radioChange'])
+
+/**
  * @description 接受父组件参数，配置默认值
  */
 const props = withDefaults(defineProps<PureSelectTableProps>(), {
 	columns: () => [],
-	requestAuto: true,
+	requestAuto: false,
 	pagination: true,
 	initParam: {},
 	border: true,
@@ -136,6 +141,8 @@ const handleSelected = (selection: any, row: any) => {
 			state.showLabel = state.showLabel.filter(s => s != row[props.keywords.label])
 		}
 	}
+
+	emits('selectionChange', selection)
 }
 
 /**
@@ -147,13 +154,15 @@ const rowClick = (row: any, column: any) => {
 		state.showLabel = row[props.keywords.label]
 		modelValue.value = row[props.keywords.value]
 		onSure()
+
+		emits('radioChange', row, row && row[props.keywords.value])
 	}
 }
 
 /**
  * @description 高亮当前选中行
  */
-function rowStyle(data: any) {
+const rowStyle = (data: any) => {
 	if (props.multiple) return
 	return {
 		cursor: 'pointer',
@@ -167,6 +176,20 @@ function rowStyle(data: any) {
 const onSure = () => {
 	selectRef.value.blur()
 }
+
+/**
+ * @description 初始化表格
+ */
+const initTable = () => {
+	tableRef.value?.getTableList()
+}
+
+/**
+ * @description 暴露方法
+ */
+defineExpose({
+	initTable
+})
 </script>
 
 <template>
@@ -183,7 +206,8 @@ const onSure = () => {
 		v-bind="selectAttr"
 	>
 		<template #empty>
-			<div class="table-box p-4" :style="{ width: props.width + 'px' }">
+			<div class="table-box p-4" :style="{ width: props.width + 'px', height: '50vh' }">
+				<!--				<div class="table-box p-4 p-l14 p-r14">-->
 				<pure-table
 					ref="tableRef"
 					:row-key="props.rowKey"
@@ -203,7 +227,7 @@ const onSure = () => {
 					@select="handleSelected"
 					@row-click="rowClick"
 				></pure-table>
-				<el-button class="absolute bottom-[35px] left-[30px]" type="primary" bg @click="onSure"> 确定 </el-button>
+				<el-button class="absolute bottom-[45px] left-[30px]" type="primary" bg @click="onSure"> 确定</el-button>
 			</div>
 		</template>
 	</el-select>

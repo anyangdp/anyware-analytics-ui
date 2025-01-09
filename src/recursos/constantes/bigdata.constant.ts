@@ -22,3 +22,13 @@ export const ETL_TASK_TYPE = [
 	{ label: '单源任务', value: 'SINGLE_TASK' },
 	{ label: '多源任务', value: 'MULTI_TASK' },
 ]
+/**
+ * @description 写入模式
+ */
+//     // 模式：override 重写，append 追加，errorIfExist 存在重复提示错误，ignoreIfExist 存在重复忽略
+export const ETL_LOAD_MODE = [
+	{ label: '重写', value: 'override' },
+	{ label: '追加', value: 'append' },
+	{ label: '存在重复提示错误', value: 'errorIfExist' },
+	{ label: '存在重复忽略', value: 'ignoreIfExist' },
+]

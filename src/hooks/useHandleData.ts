@@ -22,11 +22,12 @@ export const useHandleData = (
 			draggable: true
 		})
 			.then(async () => {
-				const res = await api(params)
-				if (!res) return reject(false)
+				await api(params)
 				ElMessage({ type: 'success', message: `${message}成功!` })
 				resolve(true)
 			})
-			.catch(() => {})
+			.catch(() => {
+				reject(false)
+			})
 	})
 }

@@ -77,7 +77,7 @@ defineExpose({
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="主机" prop="host">
-						<el-input v-model="drawerProps.row!.host" placeholder="请填写驱动" clearable></el-input>
+						<el-input v-model="drawerProps.row!.host" placeholder="请填写host" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">

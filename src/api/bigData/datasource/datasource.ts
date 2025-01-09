@@ -49,3 +49,22 @@ export const delDatasource = (id: number) => {
 export const activeDatasource = (id: number, active: boolean = false) => {
 	return http.get(`/bdDatasource/active/${id}/${active}`)
 }
+/**
+ * @description 连通性测试
+ */
+export const connectTest = (id: string) => {
+	return http.get(`/bdDatasource/connect/test/${id}`)
+}
+/**
+ * @description 数据库表
+ */
+export const queryTable = (id: string) => {
+	return http.get(`/bdDatasource/table/${id}`)
+}
+
+/**
+ * @description 数据库表字段
+ */
+export const queryTableColumns = (id: string, tableName: string) => {
+	return http.get(`/bdDatasource/table/${id}/${tableName}`)
+}
