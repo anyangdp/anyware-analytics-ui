@@ -9,11 +9,12 @@ import { addEtlTaskInfo, delEtlTaskInfo, editEtlTaskInfo, getEtlTaskInfoPage } f
 import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
 import type { BdEtlTaskInfoDTO } from '@/api/bigData/etl/etl.interface'
 import EtlTaskInfoDrawer from '@/views/BigData/Etl/component/EtlTaskInfoDrawer.vue'
+import VueJsonPretty from 'vue-json-pretty'
 
 // PureTable 实例
 const initParam = reactive({})
 const pureTable = ref<PureTableInstance>()
-
+const json = ref()
 // 表格配置项
 const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
@@ -45,6 +46,7 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: tr
 let centerDialogVisible = ref(false);
 const view = (row) => {
 	centerDialogVisible.value = true
+	json.value = JSON.parse(row!.configuration)
 }
 
 </script>
@@ -78,9 +80,9 @@ const view = (row) => {
 					</el-button>
 					<el-button type="primary" link @click="view(scope.row)">
 						<template #icon>
-							<pure-icon name="pi-carbon:view"></pure-icon>
+							<pure-icon name="pi-carbon:code"></pure-icon>
 						</template>
-						查看
+						脚本
 					</el-button>
 					<el-button type="danger" link @click="deleteEtlTask(scope.row)">
 						<template #icon>
@@ -93,14 +95,13 @@ const view = (row) => {
 			<EtlTaskInfoDrawer ref="drawerRef" />
 		</div>
 		<el-dialog
-			title="提示"
+			title="etl配置"
 			v-model="centerDialogVisible"
 			width="30%"
 			destroy-on-close
 			center
 		>
-			<span>需要注意在 Dialog 打开前是这条内容和下面的内容都是不会被渲染的</span>
-			<strong>额外的内容</strong>
+			<span><vue-json-pretty :data="json" :editable="false" /></span>
 			<template #footer>
     <span class="dialog-footer">
       <el-button @click="centerDialogVisible = false">取 消</el-button>

@@ -51,25 +51,29 @@ const targetExpands = ref<any[]>([])
 const selectSourceDatasource = async (e: BdDatasourceDTO) => {
 	if (e.id) {
 		source.value.type = e.type
-		const temp = await getTableList(e.id)
-		sourceTableList.value.length = 0
-		if (temp && Array.isArray(temp)) {
-			sourceTableList.value.push(...temp)
-		} else {
-			ElMessage.error('无数据表')
-		}
+		await querySourceTables(e.id)
+	}
+}
+const querySourceTables = async (id: string) => {
+	const temp = await getTableList(id)
+	sourceTableList.value.length = 0
+	if (temp && Array.isArray(temp)) {
+		sourceTableList.value.push(...temp)
 	}
 }
 
 const selectTargetDatasource = async (e: BdDatasourceDTO) => {
 	if (e.id) {
-		const temp = await getTableList(e.id)
-		targetTableList.value.length = 0
-		if (temp && Array.isArray(temp)) {
-			targetTableList.value.push(...temp)
-		} else {
-			ElMessage.error('无数据表')
-		}
+		target.value.type = e.type
+		await queryTargetTables(e.id)
+	}
+}
+
+const queryTargetTables = async (id: string) => {
+	const temp = await getTableList(id)
+	targetTableList.value.length = 0
+	if (temp && Array.isArray(temp)) {
+		targetTableList.value.push(...temp)
 	}
 }
 
@@ -210,6 +214,12 @@ const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
 		source.value = configuration.source
 		transform.value = configuration.transform
 		target.value = configuration.target
+		if (source.value.resourceId) {
+			await querySourceTables(source.value.resourceId)
+		}
+		if (target.value.resourceId) {
+			await queryTargetTables(target.value.resourceId)
+		}
 		if (transform?.value) {
 			for (const [name, mappingName] of Object.entries(transform.value)) {
 				mappingFields.value.push({ name, mappingName })
@@ -223,12 +233,11 @@ const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
 		// 设置数据源字段默认选中
 		await selectTable(source.value.name)
 		if (tableColumnList.value) {
-			const tempColumns = source.value.columns?.split(",");
+			const tempColumnsSet = new Set(source.value.columns?.split(","));
+			// 遍历tableColumnList并检查column_name是否存在于tempColumnsSet中
 			for (let valueElement of tableColumnList.value) {
-				for (let tempColumn of tempColumns) {
-					if (valueElement['column_name'] == tempColumn) {
-						selectDatasourceTableColumnRef.value.element.toggleRowSelection(valueElement)
-					}
+				if (tempColumnsSet.has(valueElement['column_name'])) {
+					selectDatasourceTableColumnRef.value.element.toggleRowSelection(valueElement);
 				}
 			}
 		}
@@ -352,7 +361,7 @@ defineExpose({
 						></PureSelectTable>
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="sourceResourceId">
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="source.resourceId">
 					<el-form-item label="数据源类型" prop="source">
 						<el-input v-model="source.type" disabled clearable></el-input>
 					</el-form-item>
@@ -444,7 +453,12 @@ defineExpose({
 						></PureSelectTable>
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
+					<el-form-item label="数据源类型" prop="source">
+						<el-input v-model="target.type" disabled clearable></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
 					<el-form-item label="数据库表" prop="targetName">
 						<el-select v-model="target.name" @change="selectTable" filterable
 											 placeholder="请选择数据库表">
@@ -453,7 +467,7 @@ defineExpose({
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="模式" prop="targetMode">
+					<el-form-item label="模式" prop="targetMode" v-if="target.resourceId">
 						<el-select v-model="target.mode" filterable
 											 placeholder="请选择写入模式">
 							<el-option v-for="item in ETL_LOAD_MODE" :key="item.value" :label="item.label"
@@ -461,13 +475,13 @@ defineExpose({
 						</el-select>
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
 					<el-form-item label="前置处理" prop="targetCondition">
 						<el-input type="textarea" :rows="2" placeholder="写入前置处理，清空表或者前置其他操作仅支持sql"
 											v-model="target.condition" />
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
 					<el-form-item label="拓展" prop="target.expands">
 						<div style="width: 100%;">
 							<template v-for="(item, index) in targetExpands" :key="index">
@@ -499,11 +513,11 @@ defineExpose({
 						</div>
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="配置" prop="configuration">
-						<vue-json-pretty :data="json" :editable="false" />
-					</el-form-item>
-				</el-col>
+<!--				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">-->
+<!--					<el-form-item label="配置" prop="configuration">-->
+<!--						<vue-json-pretty :data="json" :editable="false" />-->
+<!--					</el-form-item>-->
+<!--				</el-col>-->
 				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 					<el-form-item label="状态" prop="status">
 						<el-radio-group v-model="drawerProps.row!.active">

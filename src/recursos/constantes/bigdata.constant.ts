@@ -20,7 +20,7 @@ export const DATA_SOURCE_TYPE = [
  */
 export const ETL_TASK_TYPE = [
 	{ label: '单源任务', value: 'SINGLE_TASK' },
-	{ label: '多源任务', value: 'MULTI_TASK' },
+	// { label: '多源任务', value: 'MULTI_TASK' },
 ]
 /**
  * @description 写入模式
