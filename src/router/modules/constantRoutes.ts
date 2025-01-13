@@ -142,12 +142,12 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 				name: 'DataWareHouseApi',
 				meta: { title: 'api资产', icon: 'pi-ant-design:api-outlined' }
 			},
-			{
-				path: '/data/warehouse/api',
-				component: () => import('@/views/BigData/DataWarehouse/Api/Index.vue'),
-				name: 'DataWareHouseApi',
-				meta: { title: '数据资产', icon: 'pi-ant-design:api-outlined' }
-			}
+			// {
+			// 	path: '/data/warehouse/api',
+			// 	component: () => import('@/views/BigData/DataWarehouse/Api/Index.vue'),
+			// 	name: 'DataWareHouseApi',
+			// 	meta: { title: '数据资产', icon: 'pi-ant-design:api-outlined' }
+			// }
 		]
 	},
 ]

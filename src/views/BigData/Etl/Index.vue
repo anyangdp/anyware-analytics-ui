@@ -18,7 +18,7 @@ const json = ref()
 // 表格配置项
 const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
-	{ prop: 'type', label: 'etl类型', enum: ETL_TASK_TYPE, search: { el: 'select-v2'} },
+	{ prop: 'type', label: 'etl类型', width: 150, enum: ETL_TASK_TYPE, search: { el: 'select-v2'} },
 	{ prop: 'description', label: '任务说明', search: { el: 'input' } },
 	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
 	// { prop: 'configuration', label: '配置', width: 130 },

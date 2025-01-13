@@ -4,7 +4,6 @@ import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import type { BdDatasourceDTO } from '@/api/bigData/datasource/datasource.interface'
 import { DATA_SOURCE_TYPE, ETL_LOAD_MODE, ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
-import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 import { getDatasourcePage, queryTable, queryTableColumns } from '@/api/bigData/datasource/datasource'
@@ -233,11 +232,11 @@ const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
 		// 设置数据源字段默认选中
 		await selectTable(source.value.name)
 		if (tableColumnList.value) {
-			const tempColumnsSet = new Set(source.value.columns?.split(","));
+			const tempColumnsSet = new Set(source.value.columns?.split(','))
 			// 遍历tableColumnList并检查column_name是否存在于tempColumnsSet中
 			for (let valueElement of tableColumnList.value) {
 				if (tempColumnsSet.has(valueElement['column_name'])) {
-					selectDatasourceTableColumnRef.value.element.toggleRowSelection(valueElement);
+					selectDatasourceTableColumnRef.value.element.toggleRowSelection(valueElement)
 				}
 			}
 		}
@@ -251,13 +250,13 @@ const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
 
 
 const handleSubmit = () => {
+	transform.value = {}
 	for (let field of queryMappingFields()) {
-		transform.value = {}
 		transform.value[field.name] = field.mappingName
 		configuration.transform = transform?.value
 	}
+	target.value.expands = {}
 	for (let expand of queryTargetExpands()) {
-		target.value.expands = {};
 		target.value.expands[expand.key] = expand.value
 	}
 	source.value.columns = selectDatasourceTableColumnRef.value.selectedListIds.join(',')
@@ -424,7 +423,7 @@ defineExpose({
 										</el-button>
 									</div>
 								</div>
-<!--								<el-divider />-->
+								<!--								<el-divider />-->
 							</template>
 							<el-button type="primary" link @click="addMappingField()">
 								<template #icon>
@@ -482,7 +481,15 @@ defineExpose({
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
-					<el-form-item label="拓展" prop="target.expands">
+					<el-form-item prop="target.expands">
+						<div slot="label" style="display: inline-flex; align-items: center">
+							拓展:<el-tooltip
+							class="item"
+							effect="dark"
+							content="除默认模式外都需要增加主键属性用于匹配过滤"
+							placement="top-start"
+						><pure-icon name="pi-carbon:help"/></el-tooltip>
+						</div>
 						<div style="width: 100%;">
 							<template v-for="(item, index) in targetExpands" :key="index">
 								<div style=" display: flex; justify-content: left">
@@ -513,11 +520,11 @@ defineExpose({
 						</div>
 					</el-form-item>
 				</el-col>
-<!--				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">-->
-<!--					<el-form-item label="配置" prop="configuration">-->
-<!--						<vue-json-pretty :data="json" :editable="false" />-->
-<!--					</el-form-item>-->
-<!--				</el-col>-->
+				<!--				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">-->
+				<!--					<el-form-item label="配置" prop="configuration">-->
+				<!--						<vue-json-pretty :data="json" :editable="false" />-->
+				<!--					</el-form-item>-->
+				<!--				</el-col>-->
 				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 					<el-form-item label="状态" prop="status">
 						<el-radio-group v-model="drawerProps.row!.active">
