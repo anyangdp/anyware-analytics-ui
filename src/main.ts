@@ -8,7 +8,6 @@ import PureIcon from '@/components/PureIcon/PureIcon.vue'
 import ElementPlus from 'element-plus'
 
 // registers the component globally
-
 import App from './App.vue'
 
 // 引入 iconfont
@@ -21,9 +20,6 @@ import '@/styles/index.scss'
 import '@/plugins/unocss'
 
 import 'element-plus/theme-chalk/index.css'
-
-import '@vue-js-cron/element-plus/dist/element-plus.css'
-
 
 
 // 引入本地 svg 图片注册

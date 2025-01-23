@@ -14,10 +14,12 @@
     "icon": "esno ./scripts/icon.ts"
   },
   "dependencies": {
+    "@antv/x6": "^2.18.1",
     "@iconify-json/ant-design": "^1.1.16",
     "@iconify-json/carbon": "^1.1.36",
     "@iconify-json/ep": "^1.1.15",
     "@iconify-json/tdesign": "^1.1.5",
+    "@stomp/stompjs": "^6.1.2",
     "@unocss/reset": "^0.61.0",
     "@vueuse/core": "^10.11.0",
     "@wangeditor/editor": "^5.1.23",

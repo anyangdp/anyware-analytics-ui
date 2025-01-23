@@ -10,6 +10,7 @@ import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
 import type { BdEtlTaskInfoDTO } from '@/api/bigData/etl/etl.interface'
 import EtlTaskInfoDrawer from '@/views/BigData/Etl/component/EtlTaskInfoDrawer.vue'
 import VueJsonPretty from 'vue-json-pretty'
+import { WebSocketClient } from '@/utils/stompClient'
 
 // PureTable 实例
 const initParam = reactive({})
@@ -18,13 +19,14 @@ const json = ref()
 // 表格配置项
 const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
-	{ prop: 'type', label: 'etl类型', width: 150, enum: ETL_TASK_TYPE, search: { el: 'select-v2'} },
+	{ prop: 'type', label: 'etl类型', width: 150, enum: ETL_TASK_TYPE, search: { el: 'select-v2' } },
 	{ prop: 'description', label: '任务说明', search: { el: 'input' } },
-	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' }  },
+	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' } },
 	// { prop: 'configuration', label: '配置', width: 130 },
-	{ prop: 'operation', label: '操作', width: 200, fixed: 'right'}
+	{ prop: 'operation', label: '操作', width: 200, fixed: 'right' }
 ])
-
+let webSocketClient: WebSocketClient | null = null
+let messages = ref<string[]>([])
 // 删除数据源
 const deleteEtlTask = async (params: BdEtlTaskInfoDTO) => {
 	await useHandleData(delEtlTaskInfo, params.id, `删除【${params.description}】`)
@@ -43,12 +45,41 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: tr
 	}
 	drawerRef.value?.acceptParams(params)
 }
-let centerDialogVisible = ref(false);
-const view = (row) => {
+let centerDialogVisible = ref(false)
+const showCode = (row) => {
 	centerDialogVisible.value = true
 	json.value = JSON.parse(row!.configuration)
 }
 
+let etlExecuteDialogVisible = ref(false)
+
+const execute = (row) => {
+	etlExecuteDialogVisible.value = true
+
+	// 创建 stompClient 实例
+	webSocketClient = new WebSocketClient('ws://localhost:9201/ws/etlJob') // 替换为实际 WebSocket URL
+	// webSocketClient = new WebSocketClient('http://localhost:9201/ws/etlJob'); // 替换为实际 WebSocket URL
+	webSocketClient.connect(
+		() => {
+			console.log('Connected to WebSocket')
+			// 动态订阅地址
+			webSocketClient?.subscribe('/etlJob/' + row.id + '/realTime/log', handleMessage)
+		},
+		(error) => {
+			console.error('WebSocket connection error:', error)
+		}
+	)
+}
+onUnmounted(() => {
+	// 页面卸载时断开 WebSocket 连接
+	webSocketClient?.disconnect()
+	console.log('Disconnected from WebSocket')
+})
+// 处理接收到的消息
+const handleMessage = (message: any) => {
+	console.log('Received message:', message)
+	messages.value.push(JSON.stringify(message)) // 更新消息列表
+}
 </script>
 
 <template>
@@ -72,13 +103,19 @@ const view = (row) => {
 				</template>
 				<!-- 表格操作 -->
 				<template #operation="scope">
+					<el-button type="primary" link @click="execute(scope.row)">
+						<template #icon>
+							<pure-icon name="pi-carbon:caret-right"></pure-icon>
+						</template>
+						执行一次
+					</el-button>
 					<el-button type="primary" link @click="openDrawer('编辑', scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:edit"></pure-icon>
 						</template>
 						编辑
 					</el-button>
-					<el-button type="primary" link @click="view(scope.row)">
+					<el-button type="primary" link @click="showCode(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:code"></pure-icon>
 						</template>
@@ -103,12 +140,33 @@ const view = (row) => {
 		>
 			<span><vue-json-pretty :data="json" :editable="false" /></span>
 			<template #footer>
-    <span class="dialog-footer">
-      <el-button @click="centerDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="centerDialogVisible = false"
-			>确 定</el-button
-			>
-    </span>
+				<span class="dialog-footer">
+					<el-button @click="centerDialogVisible = false">取 消</el-button>
+					<el-button type="primary" @click="centerDialogVisible = false"
+					>确 定</el-button
+					>
+				</span>
+			</template>
+		</el-dialog>
+		<el-dialog
+			title="etl任务"
+			v-model="etlExecuteDialogVisible"
+			width="30%"
+			destroy-on-close
+			center
+		>
+			<span>
+				<ul>
+					<li v-for="(message, index) in messages" :key="index">{{ message }}</li>
+				</ul>
+			</span>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="etlExecuteDialogVisible = false">取 消</el-button>
+					<el-button type="primary" @click="etlExecuteDialogVisible = false"
+					>确 定</el-button
+					>
+				</span>
 			</template>
 		</el-dialog>
 	</div>

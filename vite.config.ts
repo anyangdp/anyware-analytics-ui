@@ -17,6 +17,9 @@ export default defineConfig(config => {
 	const env = loadEnv(config.mode, process.cwd())
 
 	return {
+		define: {
+			global: {},
+		},
 		plugins: [
 			vue(),
 			vueJsx(),
