@@ -335,7 +335,7 @@ defineExpose({
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="任务类型" prop="type">
-						<el-select v-model="drawerProps.row!.type" placeholder="请选择任务类型">
+						<el-select v-model="drawerProps.row!.type" :disabled="drawerProps.row!.id != undefined" placeholder="请选择任务类型">
 							<el-option v-for="item in ETL_TASK_TYPE" :key="item.value" :label="item.label"
 												 :value="item.value"></el-option>
 						</el-select>

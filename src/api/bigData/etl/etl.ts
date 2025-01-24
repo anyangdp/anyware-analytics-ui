@@ -41,3 +41,9 @@ export const delEtlTaskInfo = (id: number) => {
 export const activeEtlTaskInfo = (id: number, active: boolean = false) => {
 	return http.get(`/bdEtlTaskInfo/active/${id}/${active}`)
 }
+/**
+ * @description 执行etl任务
+ */
+export const executeEtlTask = (id: number) => {
+	return http.get(`/bdEtlTaskInfo/execute/${id}`)
+}

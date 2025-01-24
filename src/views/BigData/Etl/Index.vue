@@ -5,12 +5,19 @@ import { appActiveDic } from '@/recursos/dictionaries/app.dictionary'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
-import { addEtlTaskInfo, delEtlTaskInfo, editEtlTaskInfo, getEtlTaskInfoPage } from '@/api/bigData/etl/etl'
+import {
+	addEtlTaskInfo,
+	delEtlTaskInfo,
+	editEtlTaskInfo,
+	executeEtlTask,
+	getEtlTaskInfoPage
+} from '@/api/bigData/etl/etl'
 import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
 import type { BdEtlTaskInfoDTO } from '@/api/bigData/etl/etl.interface'
 import EtlTaskInfoDrawer from '@/views/BigData/Etl/component/EtlTaskInfoDrawer.vue'
 import VueJsonPretty from 'vue-json-pretty'
 import { WebSocketClient } from '@/utils/stompClient'
+import type { WebSocketMessage } from '@/api/websocket/ws.interface'
 
 // PureTable 实例
 const initParam = reactive({})
@@ -26,7 +33,7 @@ const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ prop: 'operation', label: '操作', width: 200, fixed: 'right' }
 ])
 let webSocketClient: WebSocketClient | null = null
-let messages = ref<string[]>([])
+let messages = ref<WebSocketMessage[]>([])
 // 删除数据源
 const deleteEtlTask = async (params: BdEtlTaskInfoDTO) => {
 	await useHandleData(delEtlTaskInfo, params.id, `删除【${params.description}】`)
@@ -53,9 +60,8 @@ const showCode = (row) => {
 
 let etlExecuteDialogVisible = ref(false)
 
-const execute = (row) => {
+const execute = async (row) => {
 	etlExecuteDialogVisible.value = true
-
 	// 创建 stompClient 实例
 	webSocketClient = new WebSocketClient('ws://localhost:9201/ws/etlJob') // 替换为实际 WebSocket URL
 	// webSocketClient = new WebSocketClient('http://localhost:9201/ws/etlJob'); // 替换为实际 WebSocket URL
@@ -69,16 +75,25 @@ const execute = (row) => {
 			console.error('WebSocket connection error:', error)
 		}
 	)
+	await executeEtlTask(row.id)
 }
 onUnmounted(() => {
 	// 页面卸载时断开 WebSocket 连接
-	webSocketClient?.disconnect()
-	console.log('Disconnected from WebSocket')
+	disconnect()
 })
 // 处理接收到的消息
-const handleMessage = (message: any) => {
+const handleMessage = (message: WebSocketMessage) => {
 	console.log('Received message:', message)
-	messages.value.push(JSON.stringify(message)) // 更新消息列表
+	messages.value.push(message) // 更新消息列表
+}
+const closeExecute = () => {
+	etlExecuteDialogVisible.value = false
+	messages.value.length = 0
+	disconnect()
+}
+const disconnect = () => {
+	webSocketClient?.disconnect()
+	console.log('Disconnected from WebSocket')
 }
 </script>
 
@@ -155,16 +170,26 @@ const handleMessage = (message: any) => {
 			destroy-on-close
 			center
 		>
-			<span>
-				<ul>
-					<li v-for="(message, index) in messages" :key="index">{{ message }}</li>
-				</ul>
-			</span>
+<!--			<span>-->
+<!--				<ul>-->
+<!--					<li v-for="(message, index) in messages" :key="index">{{ message }}</li>-->
+<!--				</ul>-->
+<!--			</span>-->
+			<el-timeline>
+				<el-timeline-item
+					v-for="(message, index) in messages"
+					:key="index"
+					:timestamp="message.timestamp"
+					:hollow="true"
+					:type="message.type === 'ERROR'? 'danger' : 'primary'"
+				>
+					{{message.content}}
+				</el-timeline-item>
+			</el-timeline>
 			<template #footer>
 				<span class="dialog-footer">
-					<el-button @click="etlExecuteDialogVisible = false">取 消</el-button>
-					<el-button type="primary" @click="etlExecuteDialogVisible = false"
-					>确 定</el-button
+					<el-button type="primary" @click="closeExecute"
+					>关 闭</el-button
 					>
 				</span>
 			</template>

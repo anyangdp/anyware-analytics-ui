@@ -9,7 +9,7 @@ export class WebSocketClient {
 			// 使用 SockJS
 			webSocketFactory: () => new WebSocket(endpoint), // 如果需要 SockJS
 			reconnectDelay: 5000, // 自动重连间隔
-			debug: (str) => console.log(str), // 调试信息输出
+			// debug: (str) => console.log(str), // 调试信息输出
 		});
 	}
 
@@ -29,8 +29,7 @@ export class WebSocketClient {
 	// 订阅指定地址
 	subscribe(destination: string, onMessage: (message: any) => void) {
 		this.client.subscribe(destination, (message) => {
-			const body = JSON.parse(message.body);
-			onMessage(body);
+			onMessage(JSON.parse(message.body));
 		});
 		console.log(`Subscribed to ${destination}`);
 	}
