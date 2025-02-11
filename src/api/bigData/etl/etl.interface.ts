@@ -9,7 +9,7 @@ export interface BdEtlTaskInfoDTO {
 }
 
 export interface EtlDataSourceConfiguration {
-	resourceId?: string;
+	resourceId: string;
 	type?: string;
 	name?: string;
 	condition?: string;
@@ -23,6 +23,17 @@ export interface SingleEtlConfiguration {
 	source: EtlDataSourceConfiguration,
 	transform?: any
 	target: EtlDataSourceConfiguration
+}
+
+export interface MultiEtlConfiguration {
+	sources: EtlDataSourceConfiguration[],
+	transform?: any
+	target: EtlDataSourceConfiguration
+}
+
+export interface SourceTable{
+	resourceId?: string,
+	tableList?: string[]
 }
 
 export interface BdEtlTaskInfoPageDTO extends BdEtlTaskInfoDTO, AbstractPageDTO{

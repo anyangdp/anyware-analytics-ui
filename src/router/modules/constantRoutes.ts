@@ -79,7 +79,25 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 		]
 	},
 	{
-		path: '/datasource',
+		path: '/metadata',
+		component: Layout,
+		name: 'MetaData',
+		meta: {
+			title: '元数据',
+			icon: 'pi-ant-design:database-filled',
+			noCache: true
+		},
+		children: [
+			{
+				path: '/metadata/datasource',
+				component: () => import('@/views/BigData/Datasource/Index.vue'),
+				name: 'DatasourceHome',
+				meta: { title: '数据源管理', icon: 'pi-ant-design:database-outlined'}
+			}
+		]
+	},
+	{
+		path: '/etl',
 		component: Layout,
 		name: 'Etl',
 		meta: {
@@ -89,16 +107,16 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 		},
 		children: [
 			{
-				path: '/datasource/home',
-				component: () => import('@/views/BigData/Datasource/Index.vue'),
-				name: 'DatasourceHome',
-				meta: { title: '数据源管理', icon: 'pi-ant-design:database-outlined'}
+				path: '/etl/single',
+				component: () => import('@/views/BigData/Etl/single/Index.vue'),
+				name: 'SingleEtl',
+				meta: { title: '单源任务', icon: 'pi-ant-design:ordered-list-outlined' }
 			},
 			{
-				path: '/datasource/etl',
-				component: () => import('@/views/BigData/Etl/Index.vue'),
-				name: 'DatasourceEtl',
-				meta: { title: 'etl任务', icon: 'pi-ant-design:ordered-list-outlined' }
+				path: '/etl/multi',
+				component: () => import('@/views/BigData/Etl/multi/Index.vue'),
+				name: 'MultiEtl',
+				meta: { title: '多源任务', icon: 'pi-ant-design:ordered-list-outlined' }
 			}
 		]
 	},

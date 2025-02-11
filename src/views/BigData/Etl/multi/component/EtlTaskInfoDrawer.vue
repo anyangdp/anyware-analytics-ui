@@ -7,7 +7,8 @@ import { DATA_SOURCE_TYPE, ETL_LOAD_MODE, ETL_TASK_TYPE } from '@/recursos/const
 import 'vue-json-pretty/lib/styles.css'
 import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 import { getDatasourcePage, queryTable, queryTableColumns } from '@/api/bigData/datasource/datasource'
-import type { SingleEtlConfiguration } from '@/api/bigData/etl/etl.interface'
+import type { EtlDataSourceConfiguration, MultiEtlConfiguration } from '@/api/bigData/etl/etl.interface'
+import type { ComponentPublicInstance } from 'vue'
 
 // 初始化对象
 const drawerVisible = ref(false)
@@ -19,45 +20,42 @@ const drawerProps = ref<DrawerProps<BdDatasourceDTO>>({
 
 const defaultLabel = ref<string>('请选择数据源')
 
-let configuration = reactive<SingleEtlConfiguration>({
-	source: {},
+let configuration = reactive<MultiEtlConfiguration>({
+	sources: [],
 	transform: {},
 	target: {}
 })
 
-const { source } = toRefs(configuration)
+const { sources } = toRefs(configuration)
 const { transform } = toRefs(configuration)
 const { target } = toRefs(configuration)
-
-let sourceResourceId = ref<string>('')
 
 // 提交数据（新增/编辑）
 const ruleFormRef = ref<FormInstance>()
 
-const selectDatasourceTableSourceRef = ref()
+const selectDatasourceTableSourceRefs = ref<(Element | ComponentPublicInstance | null)[]>([])
 const selectDatasourceTableTargetRef = ref()
-const selectDatasourceTableColumnRef = ref()
+const selectDatasourceTableColumnRefs = ref<(Element | ComponentPublicInstance | null)[]>([])
 
 
-const sourceTableList = ref<string[]>([])
+const sourceTableList = ref<Record<string, string[]>>({})
 const targetTableList = ref<string[]>([])
-const tableColumnList = ref<any[]>([])
+const tableColumnList = ref<Record<number, string[]>>({})
 
 const mappingFields = ref<any[]>([])
 
 const targetExpands = ref<any[]>([])
 
-const selectSourceDatasource = async (e: BdDatasourceDTO) => {
+const selectSourceDatasource = async (index: number, e: BdDatasourceDTO) => {
+	sources.value[index].type = e.type;
 	if (e.id) {
-		source.value.type = e.type
 		await querySourceTables(e.id)
 	}
 }
 const querySourceTables = async (id: string) => {
-	const temp = await getTableList(id)
-	sourceTableList.value.length = 0
-	if (temp && Array.isArray(temp)) {
-		sourceTableList.value.push(...temp)
+	if (!sourceTableList.value[id]) {
+		const tables = await getTableList(id);
+		sourceTableList.value[id] = Array.isArray(tables) ? tables : [];
 	}
 }
 
@@ -82,19 +80,18 @@ const getTableList = async (id: string) => {
 	return temp
 }
 
-const selectTable = async (e: string) => {
+const selectTable = async (index: number, e: string) => {
 	console.log('selectTable', e)
 	console.log(configuration)
-	const temp = await getTableColumn(source.value?.resourceId || '', e)
-	tableColumnList.value.length = 0
+	const temp = await getTableColumn(sources.value[index].resourceId || '', e)
 	if (temp && Array.isArray(temp)) {
-		tableColumnList.value.push(...temp)
+		tableColumnList.value[index] = temp;
 	} else {
 		ElMessage.error('无表格列')
 	}
 }
 const selectTargetTable = async (e: string) => {
-	console.log(e)
+	console.log('selectTable', e)
 }
 
 const getTableColumn = async (id: string, tableName: string) => {
@@ -147,21 +144,21 @@ const queryTargetExpands = () => {
 const json = ref()
 
 const checkSourceDatasource = (rule: any, value: any, callback: any) => {
-	if (!source.value.resourceId) {
+	if (!sources.value.resourceId) {
 		callback(new Error('请选择数据源'))
 	} else {
 		callback()
 	}
 }
 const checkSourceName = (rule: any, value: any, callback: any) => {
-	if (!source.value.name) {
+	if (!sources.value.name) {
 		callback(new Error('请选择表'))
 	} else {
 		callback()
 	}
 }
 const checkSourceColumn = (rule: any, value: any, callback: any) => {
-	if (!source.value.name) {
+	if (!sources.value.name) {
 		callback(new Error('请选择字段'))
 	} else {
 		callback()
@@ -192,14 +189,29 @@ const checkTargetMode = (rule: any, value: any, callback: any) => {
 // 验证
 const rules = reactive({
 	type: [{ required: true, message: '请选择任务类型', trigger: 'blur' }],
-	source: [{ required: true, validator: checkSourceDatasource, trigger: 'blur' }],
-	sourceName: [{ required: true, validator: checkSourceName, trigger: 'blur' }],
-	sourceColumn: [{ required: true, validator: checkSourceColumn, trigger: 'blur' }],
-	target: [{ required: true, validator: checkTargetDatasource, trigger: 'blur' }],
-	targetName: [{ required: true, validator: checkTargetName, trigger: 'blur' }],
-	targetMode: [{ required: true, validator: checkTargetMode, trigger: 'blur' }],
+	// source: [{ required: true, validator: checkSourceDatasource, trigger: 'blur' }],
+	// sourceName: [{ required: true, validator: checkSourceName, trigger: 'blur' }],
+	// sourceColumn: [{ required: true, validator: checkSourceColumn, trigger: 'blur' }],
+	// target: [{ required: true, validator: checkTargetDatasource, trigger: 'blur' }],
+	// targetName: [{ required: true, validator: checkTargetName, trigger: 'blur' }],
+	// targetMode: [{ required: true, validator: checkTargetMode, trigger: 'blur' }],
 	description: [{ required: true, message: '请输入名称描述', trigger: 'blur' }]
 })
+
+const addSource = () => {
+	const temp: EtlDataSourceConfiguration = {
+		resourceId: "",
+		name: "",
+		sql: "",
+		mode: "",
+		expands: "",
+		columns: ""
+	}
+	sources.value.push(temp)
+}
+const removeSource = (index: number) => {
+	sources.value.splice(index, 1)
+}
 
 // 接收父组件传过来的参数
 const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
@@ -210,11 +222,23 @@ const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
 	if (drawerProps.value.row!.configuration) {
 		json.value = JSON.parse(drawerProps.value.row!.configuration)
 		configuration = json.value
-		source.value = configuration.source
+		sources.value = configuration.sources
 		transform.value = configuration.transform
 		target.value = configuration.target
-		if (source.value.resourceId) {
-			await querySourceTables(source.value.resourceId)
+		if (sources.value) {
+			for (let i = 0; i < sources.value.length; i++) {
+				await querySourceTables(sources.value[i].resourceId)
+				// 设置数据源字段默认选中
+				await selectTable(i, sources.value[i].name ?? '')
+				// 设置数据源表默认选中
+				const tempColumnsSet = new Set(sources.value[i].columns?.split(','))
+				// 遍历tableColumnList并检查column_name是否存在于tempColumnsSet中
+				for (let valueElement of tableColumnList.value[i]) {
+					if (tempColumnsSet.has(valueElement['column_name'])) {
+						selectDatasourceTableColumnRefs.value[i].element.toggleRowSelection(valueElement)
+					}
+				}
+			}
 		}
 		if (target.value.resourceId) {
 			await queryTargetTables(target.value.resourceId)
@@ -229,20 +253,13 @@ const acceptParams = async (params: DrawerProps<BdDatasourceDTO>) => {
 				targetExpands.value.push({ key, value })
 			}
 		}
-		// 设置数据源字段默认选中
-		await selectTable(source.value.name)
-		if (tableColumnList.value) {
-			const tempColumnsSet = new Set(source.value.columns?.split(','))
-			// 遍历tableColumnList并检查column_name是否存在于tempColumnsSet中
-			for (let valueElement of tableColumnList.value) {
-				if (tempColumnsSet.has(valueElement['column_name'])) {
-					selectDatasourceTableColumnRef.value.element.toggleRowSelection(valueElement)
-				}
-			}
-		}
 	}
 	nextTick(() => {
-		selectDatasourceTableSourceRef.value.initTable()
+		if (sources.value) {
+			for (let i = 0; i < sources.value.length; i++) {
+				selectDatasourceTableSourceRefs.value[i].initTable()
+			}
+		}
 		selectDatasourceTableTargetRef.value.initTable()
 	})
 	console.log('json value:', json.value)
@@ -259,7 +276,9 @@ const handleSubmit = () => {
 	for (let expand of queryTargetExpands()) {
 		target.value.expands[expand.key] = expand.value
 	}
-	source.value.columns = selectDatasourceTableColumnRef.value.selectedListIds.join(',')
+	for (let i = 0; i < sources.value.length; i++) {
+		sources.value[i].columns =  selectDatasourceTableColumnRefs.value[i].selectedListIds.join(',')
+	}
 	console.log('configuration:', configuration)
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) {
@@ -279,16 +298,15 @@ const handleSubmit = () => {
 const closeDrawer = () => {
 	json.value = ''
 	defaultLabel.value = '请选择数据源'
-	sourceResourceId.value = ''
 	mappingFields.value = []
 	targetExpands.value = []
 	configuration = {
-		source: {},
+		sources: [],
 		transform: {},
 		target: {}
 	}
-	source.value = {}
-	transform.value = {}
+	sources.value = []
+	transform!.value = {}
 	target.value = {}
 }
 
@@ -303,11 +321,12 @@ const columns = reactive<ColumnProps<BdDatasourceDTO>[]>([
 ])
 
 const tableColumns = reactive<ColumnProps<any>[]>([
-	{ type: 'selection', label: '#', width: 130 },
+	{ type: 'selection', label: '#', width: 40 },
 	{ prop: 'column_name', label: '字段名', width: 130 },
-	{ prop: 'is_nullable', label: '是否允许空', width: 130 },
+	{ prop: 'is_nullable', label: '是否允许空', width: 100 },
 	{ prop: 'data_type', label: '数据类型', width: 130 },
-	{ prop: 'column_comment', label: '备注', width: 130 }
+	{ prop: 'is_primary_key', label: '是否是主键'},
+	{ prop: 'column_comment', label: '备注' }
 ])
 
 defineExpose({
@@ -335,7 +354,7 @@ defineExpose({
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="任务类型" prop="type">
-						<el-select v-model="drawerProps.row!.type" :disabled="drawerProps.row!.id != undefined" placeholder="请选择任务类型">
+						<el-select v-model="drawerProps.row!.type" disabled placeholder="请选择任务类型">
 							<el-option v-for="item in ETL_TASK_TYPE" :key="item.value" :label="item.label"
 												 :value="item.value"></el-option>
 						</el-select>
@@ -345,58 +364,78 @@ defineExpose({
 					<el-divider>1. 数据提取</el-divider>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="数据源选择" prop="source">
-						<PureSelectTable
-							ref="selectDatasourceTableSourceRef"
-							:columns="columns"
-							:request-auto="false"
-							:request-api="getDatasourcePage"
-							:multiple="false"
-							:width="800"
-							:label="defaultLabel"
-							v-model="source.resourceId"
-							@radio-change="selectSourceDatasource"
-							:keywords="{ label: 'description', value: 'id' }"
-						></PureSelectTable>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="source.resourceId">
-					<el-form-item label="数据源类型" prop="source">
-						<el-input v-model="source.type" disabled clearable></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="source.resourceId">
-					<el-tabs type="border-card">
-						<el-tab-pane label="快速配置">
+					<template v-for="(item, index) in sources" :key="index">
+						<div style="border: 1px solid #dddddd; margin-bottom: 10px;">
 							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-								<el-form-item label="数据库表" prop="sourceName">
-									<el-select v-model="source.name" @change="selectTable" filterable
-														 placeholder="请选择数据库表">
-										<el-option v-for="item in sourceTableList" :key="item" :label="item" :value="item"></el-option>
-									</el-select>
+								<el-form-item label="数据源选择" prop="source">
+									<PureSelectTable
+										:ref="el => selectDatasourceTableSourceRefs[index] = el"
+										:columns="columns"
+										:request-auto="true"
+										:request-api="getDatasourcePage"
+										:multiple="false"
+										:width="800"
+										:label="defaultLabel"
+										v-model="item.resourceId"
+										@radio-change="selectSourceDatasource(index, $event)"
+										:keywords="{ label: 'description', value: 'id' }"
+									></PureSelectTable>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="source.name">
-								<el-form-item label="查询字段" prop="sourceColumn">
-									<PureTable ref="selectDatasourceTableColumnRef" :columns="tableColumns" :data="tableColumnList"
-														 :pagination="false" :toolButton="false" :row-key="'column_name'" />
+							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="item.resourceId">
+								<el-form-item label="数据源类型" prop="source">
+									<el-input v-model="item.type" disabled clearable></el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-								<el-form-item label="过滤条件" prop="source.condition">
-									<el-input type="textarea" :rows="2" placeholder="使用sql语法，以and作为开始"
-														v-model="configuration.source!.condition" />
-								</el-form-item>
+							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="item.resourceId">
+								<el-tabs type="border-card">
+									<el-tab-pane label="快速配置">
+										<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+											<el-form-item label="数据库表" prop="sourceName">
+												<el-select v-model="item.name" @change="selectTable(index, $event)" filterable
+																	 placeholder="请选择数据库表">
+													<el-option v-for="sourceTableItem in sourceTableList[item.resourceId]" :key="sourceTableItem" :label="sourceTableItem" :value="sourceTableItem"></el-option>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="item.name">
+											<el-form-item label="查询字段" prop="sourceColumn">
+												<PureTable :ref="el => selectDatasourceTableColumnRefs[index] = el" :columns="tableColumns" :data="tableColumnList[index]"
+																	 :pagination="false" :toolButton="false" :row-key="'column_name'" />
+											</el-form-item>
+										</el-col>
+										<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+											<el-form-item label="过滤条件" prop="source.condition">
+												<el-input type="textarea" :rows="2" placeholder="使用sql语法，以and作为开始"
+																	v-model="item!.condition" />
+											</el-form-item>
+										</el-col>
+									</el-tab-pane>
+									<el-tab-pane label="自定义配置">
+										<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+											<el-form-item label="自定义sql" prop="source.sql">
+												<el-input type="textarea" :rows="2" placeholder="" v-model="item!.sql" />
+											</el-form-item>
+										</el-col>
+									</el-tab-pane>
+								</el-tabs>
 							</el-col>
-						</el-tab-pane>
-						<el-tab-pane label="自定义配置">
-							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-								<el-form-item label="自定义sql" prop="source.sql">
-									<el-input type="textarea" :rows="2" placeholder="" v-model="configuration.source!.condition" />
-								</el-form-item>
-							</el-col>
-						</el-tab-pane>
-					</el-tabs>
+							<div style="width: 10%; display: grid">
+								<el-button type="danger" link @click="removeSource(index)">
+									<template #icon>
+										<pure-icon name="pi-carbon:trash-can"></pure-icon>
+									</template>
+									移除
+								</el-button>
+							</div>
+						</div>
+					</template>
+					<el-button type="primary" link @click="addSource()">
+						<template #icon>
+							<pure-icon name="pi-carbon:add"></pure-icon>
+						</template>
+						添加数据源
+					</el-button>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-divider>2. 数据转换</el-divider>
@@ -459,7 +498,7 @@ defineExpose({
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
 					<el-form-item label="数据库表" prop="targetName">
-						<el-select v-model="target.name" @change="selectTable" filterable
+						<el-select v-model="target.name" @change="selectTargetTable" filterable
 											 placeholder="请选择数据库表">
 							<el-option v-for="item in targetTableList" :key="item" :label="item" :value="item"></el-option>
 						</el-select>
@@ -483,12 +522,15 @@ defineExpose({
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="target.resourceId">
 					<el-form-item prop="target.expands">
 						<div slot="label" style="display: inline-flex; align-items: center">
-							拓展:<el-tooltip
-							class="item"
-							effect="dark"
-							content="除默认模式外都需要增加主键属性用于匹配过滤"
-							placement="top-start"
-						><pure-icon name="pi-carbon:help"/></el-tooltip>
+							拓展:
+							<el-tooltip
+								class="item"
+								effect="dark"
+								content="除默认模式外都需要增加主键属性用于匹配过滤"
+								placement="top-start"
+							>
+								<pure-icon name="pi-carbon:help" />
+							</el-tooltip>
 						</div>
 						<div style="width: 100%;">
 							<template v-for="(item, index) in targetExpands" :key="index">

@@ -14,19 +14,21 @@ import {
 } from '@/api/bigData/etl/etl'
 import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
 import type { BdEtlTaskInfoDTO } from '@/api/bigData/etl/etl.interface'
-import EtlTaskInfoDrawer from '@/views/BigData/Etl/component/EtlTaskInfoDrawer.vue'
+import EtlTaskInfoDrawer from '@/views/BigData/Etl/single/component/EtlTaskInfoDrawer.vue'
 import VueJsonPretty from 'vue-json-pretty'
 import { WebSocketClient } from '@/utils/stompClient'
 import type { WebSocketMessage } from '@/api/websocket/ws.interface'
 
 // PureTable 实例
-const initParam = reactive({})
+const initParam = reactive({
+	type: 'SINGLE_BATCH_TASK'
+})
 const pureTable = ref<PureTableInstance>()
 const json = ref()
 // 表格配置项
 const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
-	{ prop: 'type', label: 'etl类型', width: 150, enum: ETL_TASK_TYPE, search: { el: 'select-v2' } },
+	// { prop: 'type', label: 'etl类型', width: 150, enum: ETL_TASK_TYPE, search: { el: 'select-v2' } },
 	{ prop: 'description', label: '任务说明', search: { el: 'input' } },
 	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' } },
 	// { prop: 'configuration', label: '配置', width: 130 },
@@ -42,7 +44,7 @@ const deleteEtlTask = async (params: BdEtlTaskInfoDTO) => {
 
 // 打开 drawer（新增、修改、查看）
 const drawerRef = ref<InstanceType<typeof EtlTaskInfoDrawer> | null>(null)
-const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: true }) => {
+const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: true, type: 'SINGLE_BATCH_TASK' }) => {
 	const params: DrawerProps<BdEtlTaskInfoDTO> = {
 		title,
 		isView: title === '查看',
@@ -170,11 +172,6 @@ const disconnect = () => {
 			destroy-on-close
 			center
 		>
-<!--			<span>-->
-<!--				<ul>-->
-<!--					<li v-for="(message, index) in messages" :key="index">{{ message }}</li>-->
-<!--				</ul>-->
-<!--			</span>-->
 			<el-timeline>
 				<el-timeline-item
 					v-for="(message, index) in messages"
