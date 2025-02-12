@@ -29,11 +29,11 @@ const json = ref()
 const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
 	{ type: 'index', label: '序号', width: 80 },
 	{ prop: 'id', label: '任务id', width: 150, search: { el: 'input' } },
-	{ prop: 'type', label: 'etl类型', width: 150, enum: ETL_TASK_TYPE, search: { el: 'select-v2' } },
 	{ prop: 'description', label: '任务说明', search: { el: 'input' } },
 	{ prop: 'active', label: '状态', width: 120, tag: true, enum: appActiveDic, search: { el: 'select-v2' } },
-	// { prop: 'configuration', label: '配置', width: 130 },
-	{ prop: 'operation', label: '操作', width: 200, fixed: 'right' }
+	{ prop: 'createdAt', label: '创建时间' },
+	{ prop: 'updatedAt', label: '更新时间' },
+	{ prop: 'operation', label: '操作', width: 300, fixed: 'right' }
 ])
 let webSocketClient: WebSocketClient | null = null
 let messages = ref<WebSocketMessage[]>([])
