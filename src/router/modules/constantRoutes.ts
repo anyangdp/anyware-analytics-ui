@@ -29,6 +29,16 @@ export const constantRouterMap: RouteRecordRaw[] = [
 		}
 	},
 	{
+		path: '/etl/design',
+		component: () => import('@/views/BigData/Etl/visualization/component/Design.vue'),
+		name: 'EtlDesign',
+		meta: {
+			hidden: true,
+			title: 'etl流程设计器',
+			noTagsView: true
+		}
+	},
+	{
 		path: '/',
 		component: Layout,
 		children: [
@@ -117,6 +127,12 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 				component: () => import('@/views/BigData/Etl/multi/Index.vue'),
 				name: 'MultiEtl',
 				meta: { title: '多源任务', icon: 'pi-ant-design:ordered-list-outlined' }
+			},
+			{
+				path: '/etl/visualization',
+				component: () => import('@/views/BigData/Etl/visualization/Index.vue'),
+				name: 'visualizationEtl',
+				meta: { title: 'etl可视化任务', icon: 'pi-ant-design:ordered-list-outlined' }
 			}
 		]
 	},

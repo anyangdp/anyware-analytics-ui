@@ -12,16 +12,16 @@ import {
 	executeEtlTask,
 	getEtlTaskInfoPage
 } from '@/api/bigData/etl/etl'
-import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
 import type { BdEtlTaskInfoDTO } from '@/api/bigData/etl/etl.interface'
-import EtlTaskInfoDrawer from '@/views/BigData/Etl/multi/component/EtlTaskInfoDrawer.vue'
+import EtlTaskInfoDrawer from '@/views/BigData/Etl/visualization/component/EtlTaskInfoDrawer.vue'
 import VueJsonPretty from 'vue-json-pretty'
 import { WebSocketClient } from '@/utils/stompClient'
 import type { WebSocketMessage } from '@/api/websocket/ws.interface'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // PureTable 实例
 const initParam = reactive({
-	type: 'MULTI_BATCH_TASK'
+	type: 'VISUALIZATION_TASK'
 })
 const pureTable = ref<PureTableInstance>()
 const json = ref()
@@ -45,7 +45,7 @@ const deleteEtlTask = async (params: BdEtlTaskInfoDTO) => {
 
 // 打开 drawer（新增、修改、查看）
 const drawerRef = ref<InstanceType<typeof EtlTaskInfoDrawer> | null>(null)
-const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: true, type: 'MULTI_BATCH_TASK' }) => {
+const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: false, type: 'VISUALIZATION_TASK' }) => {
 	const params: DrawerProps<BdEtlTaskInfoDTO> = {
 		title,
 		isView: title === '查看',
@@ -56,9 +56,9 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: tr
 	drawerRef.value?.acceptParams(params)
 }
 let centerDialogVisible = ref(false)
-const showCode = (row) => {
-	centerDialogVisible.value = true
-	json.value = JSON.parse(row!.configuration)
+const design = (row: BdEtlTaskInfoDTO) => {
+	const resolved = router.resolve('/etl/design')
+	window.open(window.location.origin + resolved.href, '_blank')
 }
 
 let etlExecuteDialogVisible = ref(false)
@@ -133,11 +133,11 @@ const disconnect = () => {
 						</template>
 						编辑
 					</el-button>
-					<el-button type="primary" link @click="showCode(scope.row)">
+					<el-button type="primary" link @click="design(scope.row)">
 						<template #icon>
 							<pure-icon name="pi-carbon:code"></pure-icon>
 						</template>
-						脚本
+						设计
 					</el-button>
 					<el-button type="danger" link @click="deleteEtlTask(scope.row)">
 						<template #icon>

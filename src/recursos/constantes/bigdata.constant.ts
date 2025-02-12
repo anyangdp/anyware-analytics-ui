@@ -19,9 +19,9 @@ export const DATA_SOURCE_TYPE = [
  * @description 数据源类型
  */
 export const ETL_TASK_TYPE = [
-	{ label: '单源任务', value: 'SINGLE_TASK' },
+	{ label: '可视化任务', value: 'VISUALIZATION_TASK' },
 	{ label: '单源批处理任务', value: 'SINGLE_BATCH_TASK' },
-	{ label: '多源批处理任务', value: 'MULTI_TASK' },
+	{ label: '多源批处理任务', value: 'MULTI_BATCH_TASK' },
 ]
 /**
  * @description 写入模式
