@@ -57,7 +57,11 @@ const openDrawer = (title: string, row: Partial<BdEtlTaskInfoDTO> = { active: fa
 }
 let centerDialogVisible = ref(false)
 const design = (row: BdEtlTaskInfoDTO) => {
-	const resolved = router.resolve('/etl/design')
+	// const resolved = router.resolve('/etl/design')
+	const resolved = router.resolve({
+		name: 'EtlDesign',
+    params: { etlId: row.id }
+	})
 	window.open(window.location.origin + resolved.href, '_blank')
 }
 

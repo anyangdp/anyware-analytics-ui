@@ -393,7 +393,7 @@ defineExpose({
 						<el-tab-pane label="自定义配置">
 							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 								<el-form-item label="自定义sql" prop="source.sql">
-									<el-input type="textarea" :rows="2" placeholder="" v-model="configuration.source!.condition" />
+									<el-input type="textarea" :rows="2" placeholder="" v-model="configuration.source!.sql" />
 								</el-form-item>
 							</el-col>
 						</el-tab-pane>

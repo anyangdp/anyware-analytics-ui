@@ -29,8 +29,8 @@ export const constantRouterMap: RouteRecordRaw[] = [
 		}
 	},
 	{
-		path: '/etl/design',
-		component: () => import('@/views/BigData/Etl/visualization/component/Design.vue'),
+		path: '/etl/design/:etlId',
+		component: () => import('@/views/BigData/Etl/visualization/Design.vue'),
 		name: 'EtlDesign',
 		meta: {
 			hidden: true,

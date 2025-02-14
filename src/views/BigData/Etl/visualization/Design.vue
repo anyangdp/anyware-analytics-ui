@@ -9,373 +9,87 @@ import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import insertCss from 'insert-css'
+import type { DrawerProps } from '@/recursos/interfaces/app.interface'
+import { DATA_SOURCE_TYPE_OBJ, ETL_COMPONENT, ETL_LOAD_MODE } from '@/recursos/constantes/bigdata.constant'
+import DatasourceInputDrawer from '@/views/BigData/Etl/visualization/component/DatasourceInputDrawer.vue'
+import DatasourceOutputDrawer from '@/views/BigData/Etl/visualization/component/DatasourceOutputDrawer.vue'
+import { useRoute } from 'vue-router'
+import { editEtlTaskInfo, retrieveEtlTaskInfo } from '@/api/bigData/etl/etl'
 
-let graph = null;
-const submit = () => {
-	alert("提交");
-
+const route = useRoute()
+let graph = null
+const fileInput = ref(null); // 文件 input 组件
+const submit = async() => {
+	console.log("etlId", route.params.etlId)
+	console.log(graph.toJSON())
+	const jsonString = JSON.stringify(graph.toJSON(), null, 2)
+	await editEtlTaskInfo({id: route.params.etlId, configuration: jsonString})
+	ElMessage.success({ message: `etl修改完成！` })
 }
 const load = () => {
-	graph.fromJSON([
-		{
-			"shape": "edge",
-			"attrs": {
-				"line": {
-					"stroke": "#A2B1C3",
-					"targetMarker": {
-						"name": "block",
-						"width": 12,
-						"height": 8
-					}
-				}
-			},
-			"id": "c3e50499-1a54-4168-a0f7-e5b64ee24816",
-			"zIndex": 0,
-			"source": {
-				"cell": "3703a24b-e30b-4095-a189-b877c36ecd4e",
-				"port": "e865973a-2d6e-4ee7-ba79-70f9449e56e1"
-			},
-			"target": {
-				"cell": "9b291606-7ddb-4112-b4fc-b17d82629077",
-				"port": "237bed3e-c27d-4c47-a67f-36edb584e341"
-			}
-		},
-		{
-			"shape": "edge",
-			"attrs": {
-				"line": {
-					"stroke": "#A2B1C3",
-					"targetMarker": {
-						"name": "block",
-						"width": 12,
-						"height": 8
-					}
-				}
-			},
-			"id": "d0ab0d6a-095d-48fa-b302-e142595ace51",
-			"zIndex": 0,
-			"source": {
-				"cell": "9b291606-7ddb-4112-b4fc-b17d82629077",
-				"port": "558854ce-7425-4515-abfd-24583fc33e92"
-			},
-			"target": {
-				"cell": "dd86aa26-43b5-4754-8ff4-7db32948d66e",
-				"port": "866d4f60-79d5-4973-97b3-6ed2aff91079"
-			}
-		},
-		{
-			"position": {
-				"x": 320,
-				"y": 180
-			},
-			"size": {
-				"width": 66,
-				"height": 36
-			},
-			"attrs": {
-				"text": {
-					"text": "mysql"
-				}
-			},
-			"visible": true,
-			"shape": "custom-rect",
-			"ports": {
-				"groups": {
-					"top": {
-						"position": "top",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"right": {
-						"position": "right",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"bottom": {
-						"position": "bottom",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"left": {
-						"position": "left",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					}
-				},
-				"items": [
-					{
-						"group": "top",
-						"id": "a9eedcaf-4dae-4b86-a875-309544eb8cb0"
-					},
-					{
-						"group": "right",
-						"id": "c6b64747-f802-465c-ad97-4cc0b712135e"
-					},
-					{
-						"group": "bottom",
-						"id": "e865973a-2d6e-4ee7-ba79-70f9449e56e1"
-					},
-					{
-						"group": "left",
-						"id": "dbf74d09-bc90-44ef-af46-4fbf43c46b29"
-					}
-				]
-			},
-			"id": "3703a24b-e30b-4095-a189-b877c36ecd4e",
-			"zIndex": 1
-		},
-		{
-			"position": {
-				"x": 318,
-				"y": 276
-			},
-			"size": {
-				"width": 70,
-				"height": 40
-			},
-			"attrs": {
-				"text": {
-					"text": "映射值"
-				}
-			},
-			"visible": true,
-			"shape": "custom-rect",
-			"ports": {
-				"groups": {
-					"top": {
-						"position": "top",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"right": {
-						"position": "right",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"bottom": {
-						"position": "bottom",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"left": {
-						"position": "left",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					}
-				},
-				"items": [
-					{
-						"group": "top",
-						"id": "237bed3e-c27d-4c47-a67f-36edb584e341"
-					},
-					{
-						"group": "right",
-						"id": "d13097c1-acd0-4869-8cc2-becdf84cf2dd"
-					},
-					{
-						"group": "bottom",
-						"id": "558854ce-7425-4515-abfd-24583fc33e92"
-					},
-					{
-						"group": "left",
-						"id": "1675b774-882c-4c9a-8d59-56dab3f395e8"
-					}
-				]
-			},
-			"id": "9b291606-7ddb-4112-b4fc-b17d82629077",
-			"zIndex": 2
-		},
-		{
-			"position": {
-				"x": 320,
-				"y": 368
-			},
-			"size": {
-				"width": 66,
-				"height": 36
-			},
-			"attrs": {
-				"text": {
-					"text": "mysql"
-				}
-			},
-			"visible": true,
-			"shape": "custom-rect",
-			"ports": {
-				"groups": {
-					"top": {
-						"position": "top",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"right": {
-						"position": "right",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"bottom": {
-						"position": "bottom",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					},
-					"left": {
-						"position": "left",
-						"attrs": {
-							"circle": {
-								"r": 4,
-								"magnet": true,
-								"stroke": "#5F95FF",
-								"strokeWidth": 1,
-								"fill": "#fff",
-								"style": {
-									"visibility": "hidden"
-								}
-							}
-						}
-					}
-				},
-				"items": [
-					{
-						"group": "top",
-						"id": "866d4f60-79d5-4973-97b3-6ed2aff91079"
-					},
-					{
-						"group": "right",
-						"id": "fde5b563-9fa4-4637-aa36-8af2fd4f1257"
-					},
-					{
-						"group": "bottom",
-						"id": "c6775c0a-8769-41b0-bbc8-e3569977e936"
-					},
-					{
-						"group": "left",
-						"id": "a6d9640e-c80e-45cb-b482-f59b08feee37"
-					}
-				]
-			},
-			"id": "dd86aa26-43b5-4754-8ff4-7db32948d66e",
-			"zIndex": 3
+	fileInput.value.click();
+}
+// 读取 JSON 文件并加载到 graph
+const handleFileChange = (event) => {
+	const file = event.target.files[0];
+	if (!file) return;
+
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		try {
+			const json = JSON.parse(e.target.result);
+			updateGraph(json);
+		} catch (error) {
+			console.error("JSON 解析失败", error);
 		}
-	]);
-}
+	};
+	reader.readAsText(file);
+};
+// 更新 graph
+const updateGraph = (json) => {
+	graph.fromJSON(json);
+};
 const exportJson = () => {
-	console.log(graph.toJSON());
-	alert("导出json")
+	console.log(graph.toJSON())
+	// 创建 JSON 字符串
+	const jsonString = JSON.stringify(graph.toJSON(), null, 2)
+
+	// 创建 Blob 对象
+	const blob = new Blob([jsonString], { type: 'application/json' })
+
+	// 创建下载链接
+	const link = document.createElement('a')
+	link.href = URL.createObjectURL(blob)
+	link.download = 'data.json' // 指定下载的文件名
+
+	// 触发点击事件下载文件
+	link.click()
+
+	// 清理 URL 对象
+	URL.revokeObjectURL(link.href)
+	alert('导出json')
 }
-console.log("init")
+const handlerCellSubmit = (e: any) => {
+	console.log('cell submit: ', e)
+}
+const drawerDatasourceInputRef = ref<any>(null)
+const drawerDatasourceOutputRef = ref<any>(null)
+const openDrawer = (title: string, row: any) => {
+	const params: DrawerProps<any> = {
+		title,
+		isView: title === '查看',
+		row: { ...row }
+	}
+	if (row.type === ETL_COMPONENT.datasourceInput.value) {
+		drawerDatasourceInputRef.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.datasourceOutput.value){
+		drawerDatasourceOutputRef.value?.acceptParams(params)
+	}
+}
+console.log('init')
 onMounted(() => {
 	preWork()
-	console.log("mounted")
+	console.log('mounted')
 	// 初始化画布
 	graph = new Graph({
 		container: document.getElementById('graph-container'),
@@ -427,7 +141,8 @@ onMounted(() => {
 				args: {
 					attrs: {
 						fill: '#5F95FF',
-						stroke: '#5F95FF'
+						stroke: '#5F95FF',
+						strokeWidth: 3
 					}
 				}
 			}
@@ -457,22 +172,19 @@ onMounted(() => {
 	const stencil = new Stencil({
 		title: '流程设计器',
 		target: graph,
-		stencilGraphWidth: 200,
+		stencilGraphWidth: 250,
 		stencilGraphHeight: 180,
 		collapsable: true,
 		groups: [
 			{
 				title: '输入',
 				name: 'group1',
-				graphHeight: 300,
+				graphHeight: 300
 			},
 			{
 				title: '输出',
 				name: 'group2',
-				graphHeight: 300,
-				layoutOptions: {
-					rowHeight: 70
-				}
+				graphHeight: 250
 			},
 			{
 				title: '转换',
@@ -493,7 +205,7 @@ onMounted(() => {
 		],
 		layoutOptions: {
 			columns: 2,
-			columnWidth: 80,
+			columnWidth: 100,
 			rowHeight: 55
 		}
 	})
@@ -574,14 +286,35 @@ onMounted(() => {
 		}
 	}
 	graph.on('node:mouseenter', () => {
+		console.log('node:mouseenter')
 		const container = document.getElementById('graph-container')
 		const ports = container.querySelectorAll('.x6-port-body')
 		showPorts(ports, true)
 	})
 	graph.on('node:mouseleave', () => {
+		console.log('node:mouseleave')
 		const container = document.getElementById('graph-container')
 		const ports = container.querySelectorAll('.x6-port-body')
 		showPorts(ports, false)
+	})
+	// 监听鼠标移入和移出连接线事件
+	graph.on('edge:mouseenter', ({ edge }) => {
+		edge.attr('line/stroke', '#1890FF');   // 鼠标悬停时改变颜色
+		edge.attr('line/strokeWidth', 3);      // 鼠标悬停时改变线宽
+	});
+
+	graph.on('edge:mouseleave', ({ edge }) => {
+		edge.attr('line/stroke', '#A2B1C3');   // 恢复默认颜色
+		edge.attr('line/strokeWidth', 2);      // 恢复默认线宽
+	});
+
+	graph.on('node:click', ({ node, e }) => {
+		console.log('node:click', node, e)
+		console.log('node:click data: ', node.data)
+		let data = {};
+		data = node.data;
+		data.id = node.id
+		openDrawer(node.label, node.data)
 	})
 
 	// 初始化图形
@@ -784,92 +517,237 @@ onMounted(() => {
 		true
 	)
 
-	const mysqlInput = graph.createNode({
+	const datasourceInput = graph.createNode({
 		shape: 'custom-rect',
-		label: 'mysql',
-	})
-	const postgresqlInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'postgresql'
-	})
-	const excelInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'excel 输入'
+		label: '数据源查询',
+		width: 90,
+		height: 30,
+		data: {
+			source: {
+				resourceId: '',
+				type: '',
+				sql: '',
+				name: '',
+				columns: '',
+				description: '数据源查询'
+			},
+			id: '',
+			type: ETL_COMPONENT.datasourceInput.value,
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#5F95FF', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '🛢️数据源查询',
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
 	})
 	const csvInput = graph.createNode({
 		shape: 'custom-rect',
-		label: 'csv 输入'
-	})
-	const apiInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'http api'
-	})
-	const mqttClientInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'mqtt client'
-	})
-	const mqttServerInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'mqtt server'
-	})
-	const tcpServerInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'tcp server'
-	})
-	const tcpClientInput = graph.createNode({
-		shape: 'custom-rect',
-		label: 'tcp client'
-	})
-	stencil.load([mysqlInput, postgresqlInput, excelInput, csvInput, apiInput, mqttServerInput, mqttClientInput, tcpServerInput, tcpClientInput], 'group1')
-
-	const imageShapes = [
-		{
-			label: 'mysql',
+		label: 'csv',
+		width: 90,
+		height: 30,
+		data: {
+			resourceId: '',
+			type: DATA_SOURCE_TYPE_OBJ.POSTGRESQL,
+			sql: '',
+			name: '',
+			columns: '',
+			description: 'postgresql表查询',
+			id: ''
 		},
-		{
-			label: 'postgresql',
-		},
-		{
-			label: 'csv 写入',
-		},
-		{
-			label: 'http api',
-		},
-		{
-			label: 'mqtt server',
-		},
-		{
-			label: 'mqtt client',
-		},
-		{
-			label: 'tcp server'
-		},
-		{
-			label: 'tcp client'
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#5F95FF', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '📄csv',
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
 		}
-	]
-	const imageNodes = imageShapes.map((item) =>
-		graph.createNode({
-			shape: 'custom-rect',
-			label: item.label
-		})
-	)
-	stencil.load(imageNodes, 'group2')
+	})
+	// const excelInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'excel 输入'
+	// })
+	// const csvInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'csv 输入'
+	// })
+	// const apiInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'http api'
+	// })
+	// const mqttClientInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'mqtt client'
+	// })
+	// const mqttServerInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'mqtt server'
+	// })
+	// const tcpServerInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'tcp server'
+	// })
+	// const tcpClientInput = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: 'tcp client'
+	// })
+	// stencil.load([datasourceInput, csvInput, excelInput, csvInput, apiInput, mqttServerInput, mqttClientInput, tcpServerInput, tcpClientInput], 'group1')
+	stencil.load([datasourceInput, csvInput], 'group1')
+
+	const datasourceOutput = graph.createNode({
+		shape: 'custom-rect',
+		label: '数据源输出',
+		width: 90,
+		height: 30,
+		data: {
+			target: {
+				resourceId: '',
+				type: '',
+				name: '',
+				mode: ETL_LOAD_MODE[0].value,
+				expands: {},
+				description: '数据源输出'
+			},
+			id: '',
+			type: ETL_COMPONENT.datasourceOutput.value,
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#52C41A', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '🛢️数据源输出',
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
+	})
+	stencil.load([datasourceOutput], 'group2')
 
 	const keyValueMapping = graph.createNode({
 		shape: 'custom-rect',
-		label: '映射值'
+		width: 90,
+		height: 30,
+		data: {
+			description: '映射',
+			mapping: {}
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#ddd', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '映射值',
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
 	})
-	const rowColumn = graph.createNode({
-		shape: 'custom-rect',
-		label: '行列转换'
-	});
-	const columnRow = graph.createNode({
-		shape: 'custom-rect',
-		label: '列行转换'
-	});
-	stencil.load([keyValueMapping, rowColumn], 'group3')
+	// const rowColumn = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: '行列转换'
+	// })
+	// const columnRow = graph.createNode({
+	// 	shape: 'custom-rect',
+	// 	label: '列行转换'
+	// })
+	stencil.load([keyValueMapping], 'group3')
+	nextTick(async () => {
+		let json = await getEtlDetail()
+		updateGraph(json)
+	}).then()
 })
+const getEtlDetail = async() => {
+	let detail = await retrieveEtlTaskInfo(route.params.etlId);
+	return JSON.parse(detail.configuration);
+}
 
 const preWork = () => {
 	const container = document.getElementById('container')
@@ -886,13 +764,13 @@ const preWork = () => {
           border: 1px solid #dfe3e8;
         }
         #stencil {
-          width: 200px;
+          width: 250px;
           height: 100%;
           position: relative;
           border-right: 1px solid #dfe3e8;
         }
         #graph-container {
-          width: calc(100% - 200px);
+          width: calc(100% - 250px);
           height: 100%;
         }
         .x6-widget-stencil  {
@@ -937,9 +815,23 @@ const preWork = () => {
 	<div>
 		<div class="header">
 			<div id="title">etl设计器</div>
-			<div id="submit"><el-button @click="load">加载json</el-button><el-button @click="submit">保存</el-button><el-button @click="exportJson">导出json</el-button></div>
+			<div id="submit">
+				<el-button @click="load">加载json</el-button>
+				<el-button @click="submit">保存</el-button>
+				<el-button @click="exportJson">导出json</el-button>
+			</div>
+			<!-- 隐藏的文件选择框 -->
+			<input
+				type="file"
+				ref="fileInput"
+				style="display: none"
+				@change="handleFileChange"
+				accept=".json"
+			/>
 		</div>
 		<div id="container">
+			<DatasourceInputDrawer ref="drawerDatasourceInputRef" @submit="handlerCellSubmit"></DatasourceInputDrawer>
+			<DatasourceOutputDrawer ref="drawerDatasourceOutputRef" @submit="handlerCellSubmit"></DatasourceOutputDrawer>
 		</div>
 	</div>
 </template>
@@ -949,13 +841,15 @@ const preWork = () => {
 	width: 100%;
 	height: 800px;
 }
-.header{
+
+.header {
 	display: flex;
 	justify-items: center;
 	justify-content: space-between;
 	padding: 10px;
 }
-.header #title{
+
+.header #title {
 	font-weight: bold;
 }
 </style>

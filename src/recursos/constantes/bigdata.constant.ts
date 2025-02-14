@@ -15,6 +15,12 @@ export const DATA_SOURCE_TYPE = [
 	{ label: 'MONGODB', value: 'MONGODB' },
 	{ label: 'UNKNOWN', value: 'UNKNOWN' }
 ]
+
+export const DATA_SOURCE_TYPE_OBJ = {
+	MYSQL: 'MYSQL',
+	POSTGRESQL: 'POSTGRESQL',
+	CLICKHOUSE: 'CLICKHOUSE',
+}
 /**
  * @description 数据源类型
  */
@@ -34,3 +40,13 @@ export const ETL_LOAD_MODE = [
 	{ label: '存在重复提示错误', value: 'errorIfExist' },
 	{ label: '存在重复忽略', value: 'ignoreIfExist' },
 ]
+export const ETL_COMPONENT = {
+	datasourceInput: {
+		label: '数据源查询',
+		value: 'datasourceInput'
+	},
+	datasourceOutput: {
+		label: '数据源输出',
+    value: 'datasourceOutput'
+	}
+}

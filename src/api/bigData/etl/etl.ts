@@ -14,6 +14,14 @@ export const getEtlTaskInfoPage = (params: BdEtlTaskInfoPageDTO) => {
 }
 
 /**
+ * @description etl任务详情
+ * @param id
+ */
+export const retrieveEtlTaskInfo = (id: string) => {
+	return http.get<BdEtlTaskInfoDTO>(`/bdEtlTaskInfo/retrieve/${id}`)
+}
+
+/**
  * @description 新增etl任务
  */
 export const addEtlTaskInfo = (params: BdEtlTaskInfoDTO) => {
