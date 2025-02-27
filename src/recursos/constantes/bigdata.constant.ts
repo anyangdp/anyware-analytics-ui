@@ -45,6 +45,14 @@ export const ETL_COMPONENT = {
 		label: '数据源查询',
 		value: 'datasourceInput'
 	},
+	fieldMapping: {
+		label: '数据处理',
+    value: 'fieldMapping'
+	},
+	filter: {
+		label: '数据处理',
+    value: 'filter'
+	},
 	datasourceOutput: {
 		label: '数据源输出',
     value: 'datasourceOutput'

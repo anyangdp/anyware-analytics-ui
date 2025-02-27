@@ -132,7 +132,7 @@ const handleSubmit = () => {
 const closeDrawer = () => {
 	drawerProps.value.row.source = {
 		resourceId: '',
-		type: '',
+		type: 'UNKNOWN',
 		sql: '',
 		name: '',
 		columns: '',

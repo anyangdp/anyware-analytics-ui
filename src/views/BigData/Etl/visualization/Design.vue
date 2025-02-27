@@ -15,6 +15,7 @@ import DatasourceInputDrawer from '@/views/BigData/Etl/visualization/component/D
 import DatasourceOutputDrawer from '@/views/BigData/Etl/visualization/component/DatasourceOutputDrawer.vue'
 import { useRoute } from 'vue-router'
 import { editEtlTaskInfo, retrieveEtlTaskInfo } from '@/api/bigData/etl/etl'
+import FieldMappingDrawer from '@/views/BigData/Etl/visualization/component/FieldMappingDrawer.vue'
 
 const route = useRoute()
 let graph = null
@@ -74,6 +75,7 @@ const handlerCellSubmit = (e: any) => {
 }
 const drawerDatasourceInputRef = ref<any>(null)
 const drawerDatasourceOutputRef = ref<any>(null)
+const drawerFieldMappingRef = ref<any>(null)
 const openDrawer = (title: string, row: any) => {
 	const params: DrawerProps<any> = {
 		title,
@@ -84,6 +86,8 @@ const openDrawer = (title: string, row: any) => {
 		drawerDatasourceInputRef.value?.acceptParams(params)
 	} else if (row.type === ETL_COMPONENT.datasourceOutput.value){
 		drawerDatasourceOutputRef.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.fieldMapping.value) {
+		drawerFieldMappingRef.value?.acceptParams(params)
 	}
 }
 console.log('init')
@@ -525,7 +529,7 @@ onMounted(() => {
 		data: {
 			source: {
 				resourceId: '',
-				type: '',
+				type: 'UNKNOWN',
 				sql: '',
 				name: '',
 				columns: '',
@@ -649,7 +653,7 @@ onMounted(() => {
 		data: {
 			target: {
 				resourceId: '',
-				type: '',
+				type: 'UNKNOWN',
 				name: '',
 				mode: ETL_LOAD_MODE[0].value,
 				expands: {},
@@ -691,13 +695,16 @@ onMounted(() => {
 	})
 	stencil.load([datasourceOutput], 'group2')
 
-	const keyValueMapping = graph.createNode({
+	const fieldMappingProcess = graph.createNode({
 		shape: 'custom-rect',
+		label: '映射',
 		width: 90,
 		height: 30,
 		data: {
 			description: '映射',
-			mapping: {}
+			mapping: {},
+			type: ETL_COMPONENT.fieldMapping.value,
+			id: ''
 		},
 		tools: [
 			{
@@ -730,6 +737,47 @@ onMounted(() => {
 			}
 		}
 	})
+	const filterProcess = graph.createNode({
+		shape: 'custom-rect',
+		width: 90,
+		height: 30,
+		data: {
+			description: '数据清洗过滤',
+			mapping: {},
+			id: '',
+			type: ETL_COMPONENT.filter.value
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#ddd', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '数据清洗过滤',
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
+	})
 	// const rowColumn = graph.createNode({
 	// 	shape: 'custom-rect',
 	// 	label: '行列转换'
@@ -738,7 +786,7 @@ onMounted(() => {
 	// 	shape: 'custom-rect',
 	// 	label: '列行转换'
 	// })
-	stencil.load([keyValueMapping], 'group3')
+	stencil.load([fieldMappingProcess, filterProcess], 'group3')
 	nextTick(async () => {
 		let json = await getEtlDetail()
 		updateGraph(json)
@@ -832,6 +880,7 @@ const preWork = () => {
 		<div id="container">
 			<DatasourceInputDrawer ref="drawerDatasourceInputRef" @submit="handlerCellSubmit"></DatasourceInputDrawer>
 			<DatasourceOutputDrawer ref="drawerDatasourceOutputRef" @submit="handlerCellSubmit"></DatasourceOutputDrawer>
+			<FieldMappingDrawer ref="drawerFieldMappingRef" @submit="handlerCellSubmit"></FieldMappingDrawer>
 		</div>
 	</div>
 </template>

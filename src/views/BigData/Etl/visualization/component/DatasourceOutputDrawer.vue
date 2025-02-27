@@ -137,7 +137,6 @@ const acceptParams = async (params: DrawerProps<any>) => {
 
 const handleSubmit = () => {
 	ruleFormRef.value!.validate(async valid => {
-		debugger
 		if (!valid) {
 			return
 		}
@@ -156,7 +155,7 @@ const handleSubmit = () => {
 const closeDrawer = () => {
 	drawerProps.value.row.target = {
 		resourceId: '',
-		type: '',
+		type: 'UNKNOWN',
 		name: '',
 		mode: ETL_LOAD_MODE[0].value,
 		expands: {},
@@ -216,20 +215,27 @@ defineExpose({
 			</el-row>
 			<el-row :gutter="35">
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-tabs type="border-card">
-						<el-tab-pane label="快速配置">
-							<el-row :gutter="35">
-								<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-									<el-form-item label="表名" prop="name">
-										<el-select v-model="drawerProps.row.target!.name" @change="selectTable" filterable
-															 placeholder="请选择数据库表">
-											<el-option v-for="item in targetTableList" :key="item" :label="item" :value="item"></el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-							</el-row>
-						</el-tab-pane>
-					</el-tabs>
+					<el-form-item label="表名" prop="name">
+						<el-select v-model="drawerProps.row.target!.name" @change="selectTable" filterable
+											 placeholder="请选择数据库表">
+							<el-option v-for="item in targetTableList" :key="item" :label="item" :value="item"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+					<el-form-item label="模式" prop="targetMode" v-if="drawerProps.row.target.resourceId">
+						<el-select v-model="drawerProps.row.target.mode" filterable
+											 placeholder="请选择写入模式">
+							<el-option v-for="item in ETL_LOAD_MODE" :key="item.value" :label="item.label"
+												 :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="drawerProps.row.target.resourceId">
+					<el-form-item label="前置处理" prop="targetCondition">
+						<el-input type="textarea" :rows="2" placeholder="写入前置处理，清空表或者前置其他操作仅支持sql"
+											v-model="drawerProps.row.target.condition" />
+					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="drawerProps.row.target.resourceId">
 					<el-form-item prop="target.expands">
