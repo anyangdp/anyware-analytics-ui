@@ -41,20 +41,44 @@ export const ETL_LOAD_MODE = [
 	{ label: '存在重复忽略', value: 'ignoreIfExist' },
 ]
 export const ETL_COMPONENT = {
-	datasourceInput: {
+	DATASOURCE_INPUT: {
 		label: '数据源查询',
-		value: 'datasourceInput'
+		value: 'DATASOURCE_INPUT'
 	},
-	fieldMapping: {
-		label: '数据处理',
-    value: 'fieldMapping'
+	FIELD_MAPPING: {
+		label: '数据映射',
+    value: 'FIELD_MAPPING'
 	},
-	filter: {
-		label: '数据处理',
-    value: 'filter'
+	FILTER: {
+		label: '数据过滤',
+    value: 'FILTER'
 	},
-	datasourceOutput: {
+	CLEAN: {
+		label: '数据清洗',
+    value: 'CLEAN'
+	},
+	DATASOURCE_OUTPUT: {
 		label: '数据源输出',
-    value: 'datasourceOutput'
+    value: 'DATASOURCE_OUTPUT'
 	}
 }
+export const ruleType = {
+	SIMPLE: "SIMPLE",
+	COMPOSITE: "COMPOSITE"
+}
+export const logicEnum = {
+	AND: "AND",
+	OR: "OR"
+}
+export const operatorOptions = [
+	{ label: '等于', value: 'EQUALS' },
+	{ label: '不等于', value: 'NOT_EQUALS' },
+	{ label: '大于', value: 'GREATER_THAN' },
+	{ label: '小于', value: 'LESS_THAN' },
+	{ label: '大于等于', value: 'GREATER_THAN_OR_EQUAL' },
+	{ label: '小于等于', value: 'LESS_THAN_OR_EQUAL' },
+	{ label: '正则匹配', value: 'REGEX' },
+	{ label: '为空', value: 'IS_EMPTY' },
+	{ label: '非空', value: 'IS_NOT_EMPTY' },
+	{ label: '包含', value: 'CONTAINS' },
+]

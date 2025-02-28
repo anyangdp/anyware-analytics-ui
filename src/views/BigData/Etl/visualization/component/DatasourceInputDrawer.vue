@@ -130,14 +130,7 @@ const handleSubmit = () => {
 	})
 }
 const closeDrawer = () => {
-	drawerProps.value.row.source = {
-		resourceId: '',
-		type: 'UNKNOWN',
-		sql: '',
-		name: '',
-		columns: '',
-		description: '数据源查询'
-	}
+	tableColumnList.value.length = 0;
 }
 
 defineExpose({

@@ -83,7 +83,7 @@ const closeDrawer = () => {
 	drawerProps.value.row = {
 		description: '映射',
 		mapping: {},
-		type: ETL_COMPONENT.fieldMapping.value,
+		type: ETL_COMPONENT.FIELD_MAPPING.value,
 		id: ''
 	}
 	mappingFields.value.length = 0;

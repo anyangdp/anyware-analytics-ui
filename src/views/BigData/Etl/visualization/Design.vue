@@ -16,6 +16,7 @@ import DatasourceOutputDrawer from '@/views/BigData/Etl/visualization/component/
 import { useRoute } from 'vue-router'
 import { editEtlTaskInfo, retrieveEtlTaskInfo } from '@/api/bigData/etl/etl'
 import FieldMappingDrawer from '@/views/BigData/Etl/visualization/component/FieldMappingDrawer.vue'
+import FilterDrawer from '@/views/BigData/Etl/visualization/component/FilterDrawer.vue'
 
 const route = useRoute()
 let graph = null
@@ -23,7 +24,7 @@ const fileInput = ref(null); // 文件 input 组件
 const submit = async() => {
 	console.log("etlId", route.params.etlId)
 	console.log(graph.toJSON())
-	const jsonString = JSON.stringify(graph.toJSON(), null, 2)
+	const jsonString = JSON.stringify(graph.toJSON())
 	await editEtlTaskInfo({id: route.params.etlId, configuration: jsonString})
 	ElMessage.success({ message: `etl修改完成！` })
 }
@@ -76,18 +77,21 @@ const handlerCellSubmit = (e: any) => {
 const drawerDatasourceInputRef = ref<any>(null)
 const drawerDatasourceOutputRef = ref<any>(null)
 const drawerFieldMappingRef = ref<any>(null)
+const drawerFilterRef = ref<any>(null)
 const openDrawer = (title: string, row: any) => {
 	const params: DrawerProps<any> = {
 		title,
 		isView: title === '查看',
 		row: { ...row }
 	}
-	if (row.type === ETL_COMPONENT.datasourceInput.value) {
+	if (row.type === ETL_COMPONENT.DATASOURCE_INPUT.value) {
 		drawerDatasourceInputRef.value?.acceptParams(params)
-	} else if (row.type === ETL_COMPONENT.datasourceOutput.value){
+	} else if (row.type === ETL_COMPONENT.DATASOURCE_OUTPUT.value){
 		drawerDatasourceOutputRef.value?.acceptParams(params)
-	} else if (row.type === ETL_COMPONENT.fieldMapping.value) {
+	} else if (row.type === ETL_COMPONENT.FIELD_MAPPING.value) {
 		drawerFieldMappingRef.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.FILTER.value) {
+		drawerFilterRef.value?.acceptParams(params)
 	}
 }
 console.log('init')
@@ -536,7 +540,7 @@ onMounted(() => {
 				description: '数据源查询'
 			},
 			id: '',
-			type: ETL_COMPONENT.datasourceInput.value,
+			type: ETL_COMPONENT.DATASOURCE_INPUT.value,
 		},
 		tools: [
 			{
@@ -660,7 +664,7 @@ onMounted(() => {
 				description: '数据源输出'
 			},
 			id: '',
-			type: ETL_COMPONENT.datasourceOutput.value,
+			type: ETL_COMPONENT.DATASOURCE_OUTPUT.value,
 		},
 		tools: [
 			{
@@ -697,13 +701,13 @@ onMounted(() => {
 
 	const fieldMappingProcess = graph.createNode({
 		shape: 'custom-rect',
-		label: '映射',
+		label:  ETL_COMPONENT.FIELD_MAPPING.label,
 		width: 90,
 		height: 30,
 		data: {
-			description: '映射',
+			description: ETL_COMPONENT.FIELD_MAPPING.label,
 			mapping: {},
-			type: ETL_COMPONENT.fieldMapping.value,
+			type: ETL_COMPONENT.FIELD_MAPPING.value,
 			id: ''
 		},
 		tools: [
@@ -739,13 +743,14 @@ onMounted(() => {
 	})
 	const filterProcess = graph.createNode({
 		shape: 'custom-rect',
+		label: '数据过滤',
 		width: 90,
 		height: 30,
 		data: {
-			description: '数据清洗过滤',
-			mapping: {},
+			description: '数据过滤',
+			filterRules: [],
 			id: '',
-			type: ETL_COMPONENT.filter.value
+			type: ETL_COMPONENT.FILTER.value
 		},
 		tools: [
 			{
@@ -767,7 +772,49 @@ onMounted(() => {
 				}
 			},
 			label: {
-				text: '数据清洗过滤',
+				text: '数据过滤',
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
+	})
+	const cleanProcess = graph.createNode({
+		shape: 'custom-rect',
+		label: ETL_COMPONENT.CLEAN.label,
+		width: 90,
+		height: 30,
+		data: {
+			description: ETL_COMPONENT.CLEAN.label,
+			filterRules: [],
+			id: '',
+			type: ETL_COMPONENT.CLEAN.value
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#ddd', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: ETL_COMPONENT.CLEAN.label,
 				fill: '#666', // 文字颜色
 				fontSize: 12, // 字体大小
 				fontWeight: '600', // 半粗体
@@ -786,7 +833,7 @@ onMounted(() => {
 	// 	shape: 'custom-rect',
 	// 	label: '列行转换'
 	// })
-	stencil.load([fieldMappingProcess, filterProcess], 'group3')
+	stencil.load([fieldMappingProcess, filterProcess, cleanProcess], 'group3')
 	nextTick(async () => {
 		let json = await getEtlDetail()
 		updateGraph(json)
@@ -881,6 +928,7 @@ const preWork = () => {
 			<DatasourceInputDrawer ref="drawerDatasourceInputRef" @submit="handlerCellSubmit"></DatasourceInputDrawer>
 			<DatasourceOutputDrawer ref="drawerDatasourceOutputRef" @submit="handlerCellSubmit"></DatasourceOutputDrawer>
 			<FieldMappingDrawer ref="drawerFieldMappingRef" @submit="handlerCellSubmit"></FieldMappingDrawer>
+			<FilterDrawer ref="drawerFilterRef" @submit="handlerCellSubmit"></FilterDrawer>
 		</div>
 	</div>
 </template>
