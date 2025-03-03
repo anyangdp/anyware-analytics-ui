@@ -70,15 +70,30 @@ export const logicEnum = {
 	AND: "AND",
 	OR: "OR"
 }
+export const logicOptions = [
+	{ label: '且', value: 'AND' },
+	{ label: '或', value: 'OR' },
+];
+
 export const operatorOptions = [
-	{ label: '等于', value: 'EQUALS' },
-	{ label: '不等于', value: 'NOT_EQUALS' },
-	{ label: '大于', value: 'GREATER_THAN' },
-	{ label: '小于', value: 'LESS_THAN' },
-	{ label: '大于等于', value: 'GREATER_THAN_OR_EQUAL' },
-	{ label: '小于等于', value: 'LESS_THAN_OR_EQUAL' },
-	{ label: '正则匹配', value: 'REGEX' },
-	{ label: '为空', value: 'IS_EMPTY' },
-	{ label: '非空', value: 'IS_NOT_EMPTY' },
-	{ label: '包含', value: 'CONTAINS' },
-]
+	{ label: '等于', value: 'EQUALS', requiresValue: true },
+	{ label: '不等于', value: 'NOT_EQUALS', requiresValue: true },
+	{ label: '大于', value: 'GREATER_THAN', requiresValue: true },
+	{ label: '小于', value: 'LESS_THAN', requiresValue: true },
+	{ label: '大于等于', value: 'GREATER_THAN_OR_EQUAL', requiresValue: true },
+	{ label: '小于等于', value: 'LESS_THAN_OR_EQUAL', requiresValue: true },
+	{ label: '正则匹配', value: 'REGEX', requiresValue: true },
+	{ label: '为空', value: 'IS_EMPTY', requiresValue: false },
+	{ label: '非空', value: 'IS_NOT_EMPTY', requiresValue: false },
+	{ label: '包含', value: 'CONTAINS', requiresValue: true },
+];
+
+export const cleanOperationOptions = [
+	{ label: '去除空格', value: 'TRIM', requiresValue: false },
+	{ label: '转换为大写', value: 'TO_UPPER_CASE', requiresValue: false },
+	{ label: '转换为小写', value: 'TO_LOWER_CASE', requiresValue: false },
+	{ label: '填充默认值', value: 'DEFAULT_VALUE', requiresValue: true },
+	{ label: '格式化日期', value: 'FORMAT_DATE', requiresValue: true },
+	{ label: '移除特殊字符', value: 'REMOVE_SPECIAL_CHARS', requiresValue: false },
+	{ label: '正则替换', value: 'REGEX_REPLACE', requiresValue: true },
+];

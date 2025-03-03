@@ -17,6 +17,7 @@ import { useRoute } from 'vue-router'
 import { editEtlTaskInfo, retrieveEtlTaskInfo } from '@/api/bigData/etl/etl'
 import FieldMappingDrawer from '@/views/BigData/Etl/visualization/component/FieldMappingDrawer.vue'
 import FilterDrawer from '@/views/BigData/Etl/visualization/component/FilterDrawer.vue'
+import CleanDrawer from '@/views/BigData/Etl/visualization/component/CleanDrawer.vue'
 
 const route = useRoute()
 let graph = null
@@ -78,6 +79,7 @@ const drawerDatasourceInputRef = ref<any>(null)
 const drawerDatasourceOutputRef = ref<any>(null)
 const drawerFieldMappingRef = ref<any>(null)
 const drawerFilterRef = ref<any>(null)
+const drawerCleanRef = ref<any>(null)
 const openDrawer = (title: string, row: any) => {
 	const params: DrawerProps<any> = {
 		title,
@@ -92,6 +94,8 @@ const openDrawer = (title: string, row: any) => {
 		drawerFieldMappingRef.value?.acceptParams(params)
 	} else if (row.type === ETL_COMPONENT.FILTER.value) {
 		drawerFilterRef.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.CLEAN.value) {
+		drawerCleanRef.value?.acceptParams(params)
 	}
 }
 console.log('init')
@@ -790,7 +794,7 @@ onMounted(() => {
 		height: 30,
 		data: {
 			description: ETL_COMPONENT.CLEAN.label,
-			filterRules: [],
+			cleanRules: [],
 			id: '',
 			type: ETL_COMPONENT.CLEAN.value
 		},
@@ -929,6 +933,7 @@ const preWork = () => {
 			<DatasourceOutputDrawer ref="drawerDatasourceOutputRef" @submit="handlerCellSubmit"></DatasourceOutputDrawer>
 			<FieldMappingDrawer ref="drawerFieldMappingRef" @submit="handlerCellSubmit"></FieldMappingDrawer>
 			<FilterDrawer ref="drawerFilterRef" @submit="handlerCellSubmit"></FilterDrawer>
+			<CleanDrawer ref="drawerCleanRef" @submit="handlerCellSubmit"></CleanDrawer>
 		</div>
 	</div>
 </template>

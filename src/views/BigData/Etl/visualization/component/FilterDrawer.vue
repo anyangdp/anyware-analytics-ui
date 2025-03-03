@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import 'vue-json-pretty/lib/styles.css'
-import { logicEnum, operatorOptions, ruleType } from '@/recursos/constantes/bigdata.constant'
+import { logicEnum, logicOptions, operatorOptions, ruleType } from '@/recursos/constantes/bigdata.constant'
 
 /**
  * @description 抛出事件
@@ -18,20 +18,20 @@ const drawerProps = ref<DrawerProps<any>>({
 })
 
 // 定义 filterRules
-const filterRules = ref([]);
+const filterRules = ref<any[]>([]);
 
 // 添加顶层规则
-const addFilterRule = (type) => {
-	if (type === 'simple') {
+const addFilterRule = (type: string) => {
+	if (type === ruleType.SIMPLE) {
 		filterRules.value.push({
-			type: 'simple',
+			type: ruleType.SIMPLE,
 			field: '',
 			operator: '',
 			value: ''
 		});
-	} else if (type === 'composite') {
+	} else if (type === ruleType.COMPOSITE) {
 		filterRules.value.push({
-			type: 'composite',
+			type: ruleType.COMPOSITE,
 			logic: 'AND',
 			rules: []
 		});
@@ -171,10 +171,14 @@ defineExpose({
 								<div v-else-if="item.type === ruleType.COMPOSITE" style="border: 1px solid #dcdfe6; padding: 10px; margin-bottom: 10px;">
 									<div style="display: flex; align-items: center; margin-bottom: 10px;">
 										<el-select v-model="item.logic" style="width: 100px;">
-											<el-option label="AND" value="AND" />
-											<el-option label="OR" value="OR" />
+											<el-option
+												v-for="option in logicOptions"
+												:key="option.value"
+												:label="option.label"
+												:value="option.value"
+											/>
 										</el-select>
-										<el-button type="primary" link @click="addSubRule(index, 'simple')" style="margin-left: 10px;">
+										<el-button type="primary" link @click="addSubRule(index, ruleType.SIMPLE)" style="margin-left: 10px;">
 											<template #icon>
 												<pure-icon name="pi-carbon:add"></pure-icon>
 											</template>
@@ -226,7 +230,7 @@ defineExpose({
 													<el-option label="AND" value="AND" />
 													<el-option label="OR" value="OR" />
 												</el-select>
-												<el-button type="primary" link @click="addSubRule(index, 'simple', subIndex)" style="margin-left: 10px;">
+												<el-button type="primary" link @click="addSubRule(index, ruleType.SIMPLE, subIndex)" style="margin-left: 10px;">
 													<template #icon>
 														<pure-icon name="pi-carbon:add"></pure-icon>
 													</template>
@@ -246,13 +250,13 @@ defineExpose({
 							</template>
 
 							<!-- 添加按钮 -->
-							<el-button type="primary" link @click="addFilterRule('simple')">
+							<el-button type="primary" link @click="addFilterRule(ruleType.SIMPLE)">
 								<template #icon>
 									<pure-icon name="pi-carbon:add"></pure-icon>
 								</template>
 								添加简单规则
 							</el-button>
-							<el-button type="primary" link @click="addFilterRule('composite')">
+							<el-button type="primary" link @click="addFilterRule(ruleType.COMPOSITE)">
 								<template #icon>
 									<pure-icon name="pi-carbon:add"></pure-icon>
 								</template>
