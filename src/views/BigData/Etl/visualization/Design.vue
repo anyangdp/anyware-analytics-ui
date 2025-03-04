@@ -18,6 +18,7 @@ import { editEtlTaskInfo, retrieveEtlTaskInfo } from '@/api/bigData/etl/etl'
 import FieldMappingDrawer from '@/views/BigData/Etl/visualization/component/FieldMappingDrawer.vue'
 import FilterDrawer from '@/views/BigData/Etl/visualization/component/FilterDrawer.vue'
 import CleanDrawer from '@/views/BigData/Etl/visualization/component/CleanDrawer.vue'
+import ValidationDrawer from '@/views/BigData/Etl/visualization/component/validationDrawer.vue'
 
 const route = useRoute()
 let graph = null
@@ -80,6 +81,7 @@ const drawerDatasourceOutputRef = ref<any>(null)
 const drawerFieldMappingRef = ref<any>(null)
 const drawerFilterRef = ref<any>(null)
 const drawerCleanRef = ref<any>(null)
+const drawerValidationDrawer = ref<any>(null)
 const openDrawer = (title: string, row: any) => {
 	const params: DrawerProps<any> = {
 		title,
@@ -96,6 +98,8 @@ const openDrawer = (title: string, row: any) => {
 		drawerFilterRef.value?.acceptParams(params)
 	} else if (row.type === ETL_COMPONENT.CLEAN.value) {
 		drawerCleanRef.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.VALIDATION.value) {
+		drawerValidationDrawer.value?.acceptParams(params)
 	}
 }
 console.log('init')
@@ -203,7 +207,7 @@ onMounted(() => {
 				name: 'group3'
 			},
 			{
-				title: '流程',
+				title: '数据质量',
 				name: 'group4'
 			},
 			{
@@ -838,6 +842,49 @@ onMounted(() => {
 	// 	label: '列行转换'
 	// })
 	stencil.load([fieldMappingProcess, filterProcess, cleanProcess], 'group3')
+	const validationProcess = graph.createNode({
+		shape: 'custom-rect',
+		label: ETL_COMPONENT.VALIDATION.label,
+		width: 90,
+		height: 30,
+		data: {
+			description: ETL_COMPONENT.VALIDATION.label,
+			validationRules: [],
+			id: '',
+			type: ETL_COMPONENT.VALIDATION.value
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#ddd', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: ETL_COMPONENT.VALIDATION.label,
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
+	})
+	stencil.load([validationProcess], 'group4')
 	nextTick(async () => {
 		let json = await getEtlDetail()
 		updateGraph(json)
@@ -934,6 +981,7 @@ const preWork = () => {
 			<FieldMappingDrawer ref="drawerFieldMappingRef" @submit="handlerCellSubmit"></FieldMappingDrawer>
 			<FilterDrawer ref="drawerFilterRef" @submit="handlerCellSubmit"></FilterDrawer>
 			<CleanDrawer ref="drawerCleanRef" @submit="handlerCellSubmit"></CleanDrawer>
+			<ValidationDrawer ref="drawerValidationDrawer" @submit="handlerCellSubmit"></ValidationDrawer>
 		</div>
 	</div>
 </template>

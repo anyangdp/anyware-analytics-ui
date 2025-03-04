@@ -57,6 +57,10 @@ export const ETL_COMPONENT = {
 		label: '数据清洗',
     value: 'CLEAN'
 	},
+	VALIDATION: {
+		label: '质量检测',
+    value: 'VALIDATION'
+	},
 	DATASOURCE_OUTPUT: {
 		label: '数据源输出',
     value: 'DATASOURCE_OUTPUT'
@@ -96,4 +100,32 @@ export const cleanOperationOptions = [
 	{ label: '格式化日期', value: 'FORMAT_DATE', requiresValue: true },
 	{ label: '移除特殊字符', value: 'REMOVE_SPECIAL_CHARS', requiresValue: false },
 	{ label: '正则替换', value: 'REGEX_REPLACE', requiresValue: true },
+];
+
+export const validationOptions = [
+	{
+		groupLabel: '完整性检查', // 分组名称
+		options: [
+			{ label: '非空', value: 'NOT_NULL', requiresValue: false },
+			{ label: '非空字符串', value: 'NOT_EMPTY', requiresValue: false }
+		]
+	},
+	{
+		groupLabel: '格式检查',
+		options: [
+			{ label: '正则匹配', value: 'MATCH_REGEX', requiresValue: true }
+		]
+	},
+	{
+		groupLabel: '范围检查',
+		options: [
+			{ label: '数值范围', value: 'IN_RANGE', requiresValue: true } // 格式: "min,max"
+		]
+	},
+	{
+		groupLabel: '枚举检查',
+		options: [
+			{ label: '枚举值', value: 'IN_SET', requiresValue: true } // 格式: "val1,val2,val3"
+		]
+	}
 ];
