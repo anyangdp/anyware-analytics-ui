@@ -45,6 +45,10 @@ export const ETL_COMPONENT = {
 		label: '数据源查询',
 		value: 'DATASOURCE_INPUT'
 	},
+	HTTP_INPUT: {
+		label: 'http查询',
+		value: 'HTTP_INPUT'
+	},
 	FIELD_MAPPING: {
 		label: '数据映射',
     value: 'FIELD_MAPPING'
@@ -64,6 +68,10 @@ export const ETL_COMPONENT = {
 	DATASOURCE_OUTPUT: {
 		label: '数据源输出',
     value: 'DATASOURCE_OUTPUT'
+	},
+	HTTP_OUTPUT: {
+		label: 'http输出',
+    value: 'HTTP_OUTPUT'
 	}
 }
 export const ruleType = {

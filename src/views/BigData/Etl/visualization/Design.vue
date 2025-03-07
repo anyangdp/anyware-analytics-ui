@@ -19,6 +19,9 @@ import FieldMappingDrawer from '@/views/BigData/Etl/visualization/component/Fiel
 import FilterDrawer from '@/views/BigData/Etl/visualization/component/FilterDrawer.vue'
 import CleanDrawer from '@/views/BigData/Etl/visualization/component/CleanDrawer.vue'
 import ValidationDrawer from '@/views/BigData/Etl/visualization/component/validationDrawer.vue'
+import { HTTP_METHOD } from '@/recursos/constantes/app.constant'
+import HttpInputDrawer from '@/views/BigData/Etl/visualization/component/HttpInputDrawer.vue'
+import HttpOutputDrawer from '@/views/BigData/Etl/visualization/component/HttpOutputDrawer.vue'
 
 const route = useRoute()
 let graph = null
@@ -82,6 +85,8 @@ const drawerFieldMappingRef = ref<any>(null)
 const drawerFilterRef = ref<any>(null)
 const drawerCleanRef = ref<any>(null)
 const drawerValidationDrawer = ref<any>(null)
+const drawerHttpInputDrawer = ref<any>(null)
+const drawerHttpOutputDrawer = ref<any>(null)
 const openDrawer = (title: string, row: any) => {
 	const params: DrawerProps<any> = {
 		title,
@@ -100,6 +105,10 @@ const openDrawer = (title: string, row: any) => {
 		drawerCleanRef.value?.acceptParams(params)
 	} else if (row.type === ETL_COMPONENT.VALIDATION.value) {
 		drawerValidationDrawer.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.HTTP_INPUT.value) {
+		drawerHttpInputDrawer.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.HTTP_OUTPUT.value) {
+		drawerHttpOutputDrawer.value?.acceptParams(params)
 	}
 }
 console.log('init')
@@ -626,6 +635,54 @@ onMounted(() => {
 			}
 		}
 	})
+	const httpInput = graph.createNode({
+		shape: 'custom-rect',
+		label: 'http',
+		width: 90,
+		height: 30,
+		data: {
+			httpConfig: {
+				url: '',
+				method: 'POST',
+				headers: {},
+				queryParams: {},
+				requestBody: '',
+				description: ETL_COMPONENT.HTTP_INPUT.label
+			},
+			id: '',
+			type: ETL_COMPONENT.HTTP_INPUT.value,
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#5F95FF', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '📄'+ETL_COMPONENT.HTTP_INPUT.label,
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
+	})
 	// const excelInput = graph.createNode({
 	// 	shape: 'custom-rect',
 	// 	label: 'excel 输入'
@@ -655,7 +712,7 @@ onMounted(() => {
 	// 	label: 'tcp client'
 	// })
 	// stencil.load([datasourceInput, csvInput, excelInput, csvInput, apiInput, mqttServerInput, mqttClientInput, tcpServerInput, tcpClientInput], 'group1')
-	stencil.load([datasourceInput, csvInput], 'group1')
+	stencil.load([datasourceInput, csvInput, httpInput], 'group1')
 
 	const datasourceOutput = graph.createNode({
 		shape: 'custom-rect',
@@ -705,7 +762,54 @@ onMounted(() => {
 			}
 		}
 	})
-	stencil.load([datasourceOutput], 'group2')
+	const httpOutput = graph.createNode({
+		shape: 'custom-rect',
+		label: ETL_COMPONENT.HTTP_OUTPUT.label,
+		width: 90,
+		height: 30,
+		data: {
+			httpConfig: {
+				url: '',
+				method: HTTP_METHOD[0].value,
+				headers: {},
+				queryParams: {},
+				description: ETL_COMPONENT.HTTP_OUTPUT.label
+			},
+			id: '',
+			type: ETL_COMPONENT.HTTP_OUTPUT.value,
+		},
+		tools: [
+			{
+				name: 'button-remove',
+				args: { x: 5, y: 2 }
+			}
+		],
+		attrs: {
+			body: {
+				fill: '#fff', // 纯白色背景
+				stroke: '#52C41A', // 细边框
+				strokeWidth: 1,
+				filter: {
+					name: 'dropShadow',
+					args: { dx: 3, dy: 3, blur: 8, color: 'rgba(0, 0, 0, 0.2)' } // 阴影
+				},
+				style: {
+					transition: 'all 0.3s ease-in-out' // 动画效果
+				}
+			},
+			label: {
+				text: '' + ETL_COMPONENT.HTTP_OUTPUT.label,
+				fill: '#666', // 文字颜色
+				fontSize: 12, // 字体大小
+				fontWeight: '600', // 半粗体
+				textAnchor: 'middle',
+				refX: '50%',
+				refY: '50%',
+				opacity: 0.9 // 文字透明度
+			}
+		}
+	})
+	stencil.load([datasourceOutput, httpOutput], 'group2')
 
 	const fieldMappingProcess = graph.createNode({
 		shape: 'custom-rect',
@@ -982,6 +1086,8 @@ const preWork = () => {
 			<FilterDrawer ref="drawerFilterRef" @submit="handlerCellSubmit"></FilterDrawer>
 			<CleanDrawer ref="drawerCleanRef" @submit="handlerCellSubmit"></CleanDrawer>
 			<ValidationDrawer ref="drawerValidationDrawer" @submit="handlerCellSubmit"></ValidationDrawer>
+			<HttpInputDrawer ref="drawerHttpInputDrawer" @submit="handlerCellSubmit"></HttpInputDrawer>
+			<HttpOutputDrawer ref="drawerHttpOutputDrawer" @submit="handlerCellSubmit"></HttpOutputDrawer>
 		</div>
 	</div>
 </template>
