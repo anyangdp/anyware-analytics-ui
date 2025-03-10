@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/modules/user'
 import { useAuthorStore } from '@/stores/modules/author'
 import { login } from '@/api/system/author'
 import type { CurrentUserInfoRes } from '@/api/system/interfaces/author.interface'
+import { HOME_URL } from '@/recursos/constantes/app.constant'
 
 /**
  * @description 定义加载图标
@@ -107,7 +108,7 @@ const saveTokenAndInitRoutes = async (token: string) => {
 	await authorStore.InitRouters()
 
 	// 重定向路由
-	await router.replace((route.query.redirect as string) || '/')
+	await router.replace((route.query.redirect as string) || HOME_URL)
 }
 </script>
 
