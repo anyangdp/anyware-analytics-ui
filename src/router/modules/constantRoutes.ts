@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { HOME_URL } from '@/recursos/constantes/app.constant'
+import { HOME_URL, LOGIN_URL } from '@/recursos/constantes/app.constant'
 
 /**
  * @description 定义布局页
@@ -13,7 +13,7 @@ export const constantRouterMap: RouteRecordRaw[] = [
 	{
 		path: '/',
 		name: '控制台',
-		redirect: HOME_URL,
+		redirect: LOGIN_URL,
 		meta: {
 			isKeepAlive: true
 		}
@@ -103,6 +103,12 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 				component: () => import('@/views/BigData/Datasource/Index.vue'),
 				name: 'DatasourceHome',
 				meta: { title: '数据源管理', icon: 'pi-ant-design:database-outlined'}
+			},
+			{
+				path: '/metadata/file',
+				component: () => import('@/views/BigData/File/Index.vue'),
+				name: 'FilesHome',
+				meta: { title: '文件资源管理', icon: 'pi-ant-design:database-outlined'}
 			}
 		]
 	},
