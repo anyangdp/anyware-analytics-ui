@@ -22,6 +22,7 @@ import ValidationDrawer from '@/views/BigData/Etl/visualization/component/valida
 import { HTTP_METHOD } from '@/recursos/constantes/app.constant'
 import HttpInputDrawer from '@/views/BigData/Etl/visualization/component/HttpInputDrawer.vue'
 import HttpOutputDrawer from '@/views/BigData/Etl/visualization/component/HttpOutputDrawer.vue'
+import CsvInputDrawer from '@/views/BigData/Etl/visualization/component/CsvInputDrawer.vue'
 
 const route = useRoute()
 let graph = null
@@ -54,7 +55,9 @@ const handleFileChange = (event) => {
 };
 // 更新 graph
 const updateGraph = (json) => {
-	graph.fromJSON(json);
+	if (json) {
+		graph.fromJSON(json);
+	}
 };
 const exportJson = () => {
 	console.log(graph.toJSON())
@@ -87,6 +90,7 @@ const drawerCleanRef = ref<any>(null)
 const drawerValidationDrawer = ref<any>(null)
 const drawerHttpInputDrawer = ref<any>(null)
 const drawerHttpOutputDrawer = ref<any>(null)
+const drawerCsvInputDrawer = ref<any>(null)
 const openDrawer = (title: string, row: any) => {
 	const params: DrawerProps<any> = {
 		title,
@@ -109,6 +113,8 @@ const openDrawer = (title: string, row: any) => {
 		drawerHttpInputDrawer.value?.acceptParams(params)
 	} else if (row.type === ETL_COMPONENT.HTTP_OUTPUT.value) {
 		drawerHttpOutputDrawer.value?.acceptParams(params)
+	} else if (row.type === ETL_COMPONENT.CSV_INPUT.value) {
+		drawerCsvInputDrawer.value?.acceptParams(params)
 	}
 }
 console.log('init')
@@ -592,17 +598,21 @@ onMounted(() => {
 	})
 	const csvInput = graph.createNode({
 		shape: 'custom-rect',
-		label: 'csv',
+		label: ETL_COMPONENT.CSV_INPUT.label,
 		width: 90,
 		height: 30,
 		data: {
-			resourceId: '',
-			type: DATA_SOURCE_TYPE_OBJ.POSTGRESQL,
-			sql: '',
-			name: '',
-			columns: '',
-			description: 'postgresql表查询',
-			id: ''
+			csvConfig: {
+				filePath: '',
+				hasHeader: false,
+				columnNames: [],
+				delimiter: '',
+				encoding: '',
+				linesToSkip: 0,
+				description: ETL_COMPONENT.CSV_INPUT.label,
+			},
+			id: '',
+			type: ETL_COMPONENT.CSV_INPUT.value
 		},
 		tools: [
 			{
@@ -624,7 +634,7 @@ onMounted(() => {
 				}
 			},
 			label: {
-				text: '📄csv',
+				text: '📄'+ ETL_COMPONENT.CSV_INPUT.label,
 				fill: '#666', // 文字颜色
 				fontSize: 12, // 字体大小
 				fontWeight: '600', // 半粗体
@@ -1088,6 +1098,7 @@ const preWork = () => {
 			<ValidationDrawer ref="drawerValidationDrawer" @submit="handlerCellSubmit"></ValidationDrawer>
 			<HttpInputDrawer ref="drawerHttpInputDrawer" @submit="handlerCellSubmit"></HttpInputDrawer>
 			<HttpOutputDrawer ref="drawerHttpOutputDrawer" @submit="handlerCellSubmit"></HttpOutputDrawer>
+			<CsvInputDrawer ref="drawerCsvInputDrawer" @submit="handlerCellSubmit"></CsvInputDrawer>
 		</div>
 	</div>
 </template>

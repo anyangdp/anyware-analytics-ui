@@ -51,6 +51,12 @@ export const uploadDirectory = (file: Blob, path: string) => {
 }
 
 /**
+ * @description 文件系统
+ */
+export const directoryAllList = (fileRequestDTO: FileRequestDTO) => {
+	return http.post('/s/file/directory/all', fileRequestDTO)
+}
+/**
  * @description 文件夹列表
  */
 export const directoryList = (fileRequestDTO: FileRequestDTO) => {

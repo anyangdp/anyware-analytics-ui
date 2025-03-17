@@ -49,6 +49,10 @@ export const ETL_COMPONENT = {
 		label: 'http查询',
 		value: 'HTTP_INPUT'
 	},
+	CSV_INPUT: {
+		label: 'csv查询',
+		value: 'CSV_INPUT'
+	},
 	FIELD_MAPPING: {
 		label: '数据映射',
     value: 'FIELD_MAPPING'
