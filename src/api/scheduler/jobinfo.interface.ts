@@ -8,6 +8,7 @@ export interface SchedulerJobInfoDTO {
 	className?: string;
 	cron?: string;
 	type?: number;
+	bizId?: string;
 	jobData?: any;
 	description?: string;
 	sort: number;

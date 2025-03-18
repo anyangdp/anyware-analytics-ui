@@ -4,6 +4,9 @@ import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import 'vue-json-pretty/lib/styles.css'
 import type { SchedulerJobInfoDTO } from '@/api/scheduler/jobinfo.interface'
+import { getEtlTaskInfoPage } from '@/api/bigData/etl/etl'
+import type { BdEtlTaskInfoDTO } from '@/api/bigData/etl/etl.interface'
+import type { ColumnProps } from '@/components/PureTable/interfaces/pureTable.interface'
 
 // 初始化对象
 const drawerVisible = ref(false)
@@ -23,6 +26,17 @@ const rules = reactive({
 	className: [{ required: true, message: '请选择任务类' }],
 	description: [{ required: true, message: '请输入名称描述' }]
 })
+
+const selectEtlRef = ref()
+// 表格配置项
+const columns = reactive<ColumnProps<BdEtlTaskInfoDTO>[]>([
+	{ type: 'index', label: '序号', width: 80 },
+	{ prop: 'id', label: '任务id', width: 150, search: { el: 'input' } },
+	{ prop: 'description', label: '任务说明', search: { el: 'input' } }
+])
+
+const defaultLabel = ref<string>('请选择etl任务')
+
 // 接收父组件传过来的参数
 const acceptParams = (params: DrawerProps<SchedulerJobInfoDTO>) => {
 	drawerProps.value = params
@@ -108,11 +122,14 @@ defineExpose({
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="执行中的任务类" prop="className">
-						<el-input v-model="drawerProps.row!.className" placeholder="任务全路径" clearable></el-input>
+						<el-select v-model="drawerProps.row!.className">
+							<el-option value="com.mj.web.quartz.job.SampleJob" label="普通任务"></el-option>
+							<el-option value="com.mj.web.big.data.job.scheduler.EtlSchedulerJob" label="etl任务"></el-option>
+						</el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="类型" prop="isDurable">
+					<el-form-item label="类型" prop="type">
 						<el-radio-group v-model="drawerProps.row!.type">
 							<el-radio :label="1">普通任务</el-radio>
 							<el-radio :label="2">etl任务</el-radio>
@@ -122,6 +139,21 @@ defineExpose({
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="执行周期" prop="cron">
 						<el-input v-model="drawerProps.row!.cron" placeholder="执行周期" clearable></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+					<el-form-item label="etl任务" prop="bizId" v-show="drawerProps.row!.type === 2">
+						<PureSelectTable
+							ref="selectEtlRef"
+							:columns="columns"
+							:request-auto="true"
+							:request-api="getEtlTaskInfoPage"
+							:multiple="false"
+							:width="800"
+							:label="defaultLabel"
+							v-model="drawerProps.row!.bizId"
+							:keywords="{ label: 'description', value: 'id' }"
+						></PureSelectTable>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
