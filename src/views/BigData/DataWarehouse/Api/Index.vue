@@ -34,7 +34,7 @@ const deleteEtlTask = async (params: BdApiMetadataDTO) => {
 
 // 打开 drawer（新增、修改、查看）
 const drawerRef = ref<InstanceType<typeof EtlTaskInfoDrawer> | null>(null)
-const openDrawer = (title: string, row: Partial<BdApiMetadataDTO> = { active: true }) => {
+const openDrawer = (title: string, row: Partial<BdApiMetadataDTO> = { active: false, httpMethod: 'POST' }) => {
 	const params: DrawerProps<BdApiMetadataDTO> = {
 		title,
 		isView: title === '查看',

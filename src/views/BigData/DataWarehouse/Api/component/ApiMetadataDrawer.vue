@@ -2,12 +2,9 @@
 import type { FormInstance } from 'element-plus'
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import { FORM_LABEL_POSITION, FORM_SIZE, HTTP_METHOD } from '@/recursos/constantes/app.constant'
-import type { BdDatasourceDTO } from '@/api/bigData/datasource/datasource.interface'
-import { ETL_TASK_TYPE } from '@/recursos/constantes/bigdata.constant'
-import JsonEditorVue from 'json-editor-vue'
-import VueJsonPretty from 'vue-json-pretty';
-import 'vue-json-pretty/lib/styles.css';
-import type { BdApiMetadataDTO } from '@/api/bigData/api/apimetadata.interface'
+import 'vue-json-pretty/lib/styles.css'
+import type { BdApiMetadataDTO, FilterCondition, GroupBy, OrderBy } from '@/api/bigData/api/apimetadata.interface'
+import MetadataConfig from '@/views/BigData/DataWarehouse/Api/component/MetadataConfig.vue'
 
 // 初始化对象
 const drawerVisible = ref(false)
@@ -19,14 +16,50 @@ const drawerProps = ref<DrawerProps<BdApiMetadataDTO>>({
 
 // 验证
 const rules = reactive({
-	type: [{ required: true, message: '请选择任务类型' }],
+	name: [{ required: true, message: '请输入api名称' }],
+	path: [{ required: true, message: '请输入api路径' }],
 	description: [{ required: true, message: '请输入名称描述' }]
 })
+
+let metadata = ref<any>({})
 
 // 接收父组件传过来的参数
 const acceptParams = (params: DrawerProps<BdApiMetadataDTO>) => {
 	drawerProps.value = params
+	if (drawerProps.value.row!.metadata) {
+		metadata.value = JSON.parse(drawerProps.value.row!.metadata); // 初始化 metadata
+	} else {
+		metadata.value = {
+			headers: { 'Content-Type': ["application/json"] },
+			sql: '',
+			selectFields: [],
+			returnType: 'LIST',
+			tableName: '',
+			conditions: [],
+			groupBy: [],
+			orderBy: [],
+			pageEnable: false,
+			resourceId: ''
+		}
+	}
 	drawerVisible.value = true
+}
+
+// 处理分页状态变化
+const handlePageEnableChange = (isEnabled: boolean) => {
+	if (drawerProps.value.row.path) {
+		let currentPath = drawerProps.value.row!.path.replace(/\/\{page\}\/\{pageSize\}$/, '');
+		if (isEnabled) {
+			drawerProps.value.row!.path = currentPath + '/{page}/{pageSize}';
+		} else {
+			drawerProps.value.row!.path = currentPath;
+		}
+		console.log('更新后的 API 路径:', drawerProps.value.row!.path);
+	}
+};
+
+const updateMetadata = (temp) => {
+	drawerProps.value.row!.metadata = JSON.stringify(temp);
 }
 
 // 提交数据（新增/编辑）
@@ -35,6 +68,7 @@ const handleSubmit = () => {
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) return
 		try {
+			console.log('提交时的 drawerProps.row:', drawerProps.value.row);
 			await drawerProps.value.api!(drawerProps.value.row)
 			ElMessage.success({ message: `${drawerProps.value.title}数据源成功！` })
 			drawerProps.value.getTableList!()
@@ -80,13 +114,16 @@ defineExpose({
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="处理方法" prop="handlerClass">
-						<el-input v-model="drawerProps.row!.handlerClass" placeholder="请填写处理方法" clearable></el-input>
+						<el-select v-model="drawerProps.row!.handlerClass" placeholder="请填写处理方法">
+							<el-option label="com.mj.web.big.data.handler.DynamicApiHandler" value="com.mj.web.big.data.handler.DynamicApiHandler"></el-option>
+						</el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="高级配置" prop="metadata">
-						<el-input type="textarea"  v-model="drawerProps.row!.metadata" placeholder="请填写高级配置" clearable></el-input>
-					</el-form-item>
+<!--					<el-form-item label="高级配置" prop="metadata">-->
+<!--						<el-input type="textarea"  v-model="drawerProps.row!.metadata" placeholder="请填写高级配置" clearable></el-input>-->
+<!--					</el-form-item>-->
+					<MetadataConfig :model-value="metadata" @update:model-value="updateMetadata" @page-enable-changed="handlePageEnableChange"></MetadataConfig>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="备注" prop="description">
