@@ -1,3 +1,5 @@
+import type { AbstractDTO } from '@/api/core/AbstractDTO'
+
 /**
  * @description 列表请求参数
  * @param title {string} 菜单名称
@@ -11,67 +13,25 @@ export interface MenuListReq {
 /**
  * @description 列表返回参数
  */
-export interface MenuListRes {
-	/**
-	 * 创建时间
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	createTime?: string | null
-	/**
-	 * 更新时间
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	updateTime?: string | null
-	/**
-	 * 创建者Id
-	 * @type {number}
-	 * @memberof MenuListRes
-	 */
-	createUserId?: number | null
-	/**
-	 * 创建者姓名
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	createUserName?: string | null
-	/**
-	 * 修改者Id
-	 * @type {number}
-	 * @memberof MenuListRes
-	 */
-	updateUserId?: number | null
-	/**
-	 * 修改者姓名
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	updateUserName?: string | null
-	/**
-	 * 软删除
-	 * @type {boolean}
-	 * @memberof MenuListRes
-	 */
-	isDelete?: boolean
-	/**
-	 * 主键Id
-	 * @type {number}
-	 * @memberof MenuListRes
-	 */
-	id?: number
+export interface MenuListRes extends AbstractDTO{
 	/**
 	 * 父Id
 	 * @type {number}
 	 * @memberof MenuListRes
 	 */
-	pid?: number
+	parentId?: number
 	/**
 	 * 菜单类型（1目录 2菜单 3按钮）
 	 * @type {object}
 	 * @memberof MenuListRes
 	 */
 	type?: number
+	/**
+	 * 菜单层级
+	 * @type {number}
+	 * @memberof MenuListRes
+	 */
+	level?: number
 	/**
 	 * 路由名称
 	 * @type {string}
@@ -91,18 +51,6 @@ export interface MenuListRes {
 	 */
 	component?: string | null
 	/**
-	 * 重定向
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	redirect?: string | null
-	/**
-	 * 权限标识
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	permission?: string | null
-	/**
 	 * 菜单名称
 	 * @type {string}
 	 * @memberof MenuListRes
@@ -115,53 +63,23 @@ export interface MenuListRes {
 	 */
 	icon?: string
 	/**
-	 * 是否内嵌
-	 * @type {boolean}
-	 * @memberof MenuListRes
-	 */
-	isIframe?: boolean
-	/**
 	 * 外链链接
 	 * @type {string}
 	 * @memberof MenuListRes
 	 */
 	outLink?: string | null
 	/**
-	 * 是否隐藏
-	 * @type {boolean}
-	 * @memberof MenuListRes
-	 */
-	isHide?: boolean
-	/**
-	 * 是否缓存
-	 * @type {boolean}
-	 * @memberof MenuListRes
-	 */
-	isKeepAlive?: boolean
-	/**
-	 * 是否固定
-	 * @type {boolean}
-	 * @memberof MenuListRes
-	 */
-	isAffix?: boolean
-	/**
 	 * 排序
 	 * @type {number}
 	 * @memberof MenuListRes
 	 */
-	orderNo?: number
+	sort?: number
 	/**
 	 * 状态
 	 * @type {object}
 	 * @memberof MenuListRes
 	 */
-	status?: number
-	/**
-	 * 备注
-	 * @type {string}
-	 * @memberof MenuListRes
-	 */
-	remark?: string | null
+	active?: boolean
 	/**
 	 * 菜单子项
 	 * @type {Array<MenuListRes>}

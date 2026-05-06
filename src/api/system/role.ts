@@ -14,7 +14,7 @@ export const listRole = () => {
  * @param params {RolePageReq} 角色请求参数
  */
 export const getRolePage = (params: RolePageReq) => {
-	return http.get<ApiPageResult<RolePageRes[]>>('/api/sys/role/page', params)
+	return http.post<ApiPageResult<RolePageRes[]>>(`/sRole/page/${params.page}/${params.pageSize}`, params)
 }
 
 /**
@@ -22,7 +22,7 @@ export const getRolePage = (params: RolePageReq) => {
  * @param id {number} 角色 id
  */
 export const getRoleOwnMenuList = (id: number) => {
-	return http.get<number[]>('/api/sys/role/own-menu-list', { id: id })
+	return http.get<number[]>(`/sRole/authority/${id}`, {  })
 }
 
 /**
@@ -30,7 +30,7 @@ export const getRoleOwnMenuList = (id: number) => {
  * @param params {OrgEditReq} 请求参数
  */
 export const addRole = (params: RoleEditReq) => {
-	return http.post('/api/sys/role/add', params)
+	return http.post('/sRole/create', params)
 }
 
 /**
@@ -38,7 +38,11 @@ export const addRole = (params: RoleEditReq) => {
  * @param params {OrgEditReq} 请求参数
  */
 export const editRole = (params: RoleEditReq) => {
-	return http.post('/api/sys/role/update', params)
+	return http.put('/sRole/update', params)
+}
+
+export const authorize = (params: RoleEditReq) => {
+	return http.post('/sRole/authorize', params)
 }
 
 /**
@@ -46,5 +50,5 @@ export const editRole = (params: RoleEditReq) => {
  * @param id {number} 主键 id
  */
 export const delRole = (id: number) => {
-	return http.post('/api/sys/role/delete', { id: id })
+	return http.delete(`/sRole/${id}`)
 }

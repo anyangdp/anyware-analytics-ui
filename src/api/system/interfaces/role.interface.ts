@@ -1,3 +1,5 @@
+import type { AbstractPageDTO } from '@/api/core/AbstractPageDTO'
+
 /**
  * @description 角色列表返回值
  * @param id {number} 主键 id
@@ -15,9 +17,8 @@ export interface RoleListRes {
  * @param name {string} 角色名称
  * @param code {string} 橘色编码
  */
-export interface RolePageReq {
+export interface RolePageReq extends AbstractPageDTO{
 	name?: string
-	code?: string
 }
 
 /**
@@ -31,47 +32,29 @@ export interface RolePageRes {
 	 */
 	id?: number
 	/**
-	 * 租户Id
-	 * @type {number}
-	 * @memberof RolePageRes
-	 */
-	tenantId?: number | null
-	/**
 	 * 创建时间
 	 * @type {string}
 	 * @memberof RolePageRes
 	 */
-	createTime?: string | null
+	createdAt?: string | null
 	/**
 	 * 更新时间
 	 * @type {string}
 	 * @memberof RolePageRes
 	 */
-	updateTime?: string | null
+	updatedAt?: string | null
 	/**
 	 * 创建者Id
 	 * @type {number}
 	 * @memberof RolePageRes
 	 */
-	createUserId?: number | null
+	createdBy?: number | null
 	/**
 	 * 创建者姓名
 	 * @type {string}
 	 * @memberof RolePageRes
 	 */
-	createUserName?: string | null
-	/**
-	 * 修改者Id
-	 * @type {number}
-	 * @memberof RolePageRes
-	 */
-	updateUserId?: number | null
-	/**
-	 * 修改者姓名
-	 * @type {string}
-	 * @memberof RolePageRes
-	 */
-	updateUserName?: string | null
+	createdByName?: string | null
 	/**
 	 * 软删除
 	 * @type {boolean}
@@ -85,17 +68,11 @@ export interface RolePageRes {
 	 */
 	name?: string | null
 	/**
-	 * 编码
-	 * @type {string}
-	 * @memberof RolePageRes
-	 */
-	code?: string | null
-	/**
 	 * 排序
 	 * @type {number}
 	 * @memberof RolePageRes
 	 */
-	orderNo?: number
+	sort?: number
 	/**
 	 * 数据范围（1全部数据 2本部门及以下数据 3本部门数据 4仅本人数据 5自定义数据）
 	 * @type {number}
@@ -107,7 +84,7 @@ export interface RolePageRes {
 	 * @type {string}
 	 * @memberof RolePageRes
 	 */
-	remark?: string | null
+	description?: string | null
 	/**
 	 * 状态
 	 * @type {number}

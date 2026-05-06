@@ -49,14 +49,15 @@ const acceptParams = async (params: DrawerProps<RolePageRes>) => {
 
 	state.loading = true
 	let res = await listMenu({})
-	state.menuData = res.result ?? []
+	state.menuData = res ?? []
 	state.loading = false
 
 	// 判断是否需要加载选中的菜单
 	if (drawerProps.value.row.id != undefined) {
 		let res = await getRoleOwnMenuList(drawerProps.value.row.id)
 		setTimeout(() => {
-			treeRef.value!.setCheckedKeys(res.result ?? [])
+			const permissionIds = res?.map(item => item?.permissionId) ?? [];
+			treeRef.value!.setCheckedKeys(permissionIds)
 		}, 100)
 	}
 }
@@ -69,9 +70,18 @@ const handleSubmit = () => {
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) return
 		try {
-			// 赋值选中的菜单 id 列表
-			drawerProps.value.row.menuIdList = treeRef.value?.getCheckedKeys() as Array<number>
-			await drawerProps.value.api!(drawerProps.value.row)
+			console.log(drawerProps.value.title)
+			if (drawerProps.value.title == '授权') {
+				// 赋值选中的菜单 id 列表
+				let permissionList = treeRef.value?.getCheckedKeys() as Array<string>
+				console.log(drawerProps.value.api)
+				await drawerProps.value.api!({
+					roleId: drawerProps.value.row.id,
+					permissionList: permissionList
+				})
+			} else {
+				await drawerProps.value.api!(drawerProps.value.row)
+			}
 			ElMessage.success({ message: `${drawerProps.value.title}成功！` })
 			drawerProps.value.getTableList!()
 			drawerVisible.value = false
@@ -100,40 +110,30 @@ defineExpose({
 			:hide-required-asterisk="drawerProps.isView"
 		>
 			<el-row :gutter="35">
-				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="drawerProps.title != '授权'">
 					<el-form-item label="角色名称" prop="name" :rules="[{ required: true, message: '角色名称不能为空', trigger: 'blur' }]">
 						<el-input v-model="drawerProps.row!.name" placeholder="角色名称" clearable />
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-					<el-form-item label="角色编码" prop="code" :rules="[{ required: true, message: '角色编码不能为空', trigger: 'blur' }]">
-						<el-input
-							v-model="drawerProps.row!.code"
-							placeholder="角色编码"
-							clearable
-							:disabled="drawerProps.row!.code == 'sys_admin' && drawerProps.row!.id != undefined"
-						/>
+				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="drawerProps.title != '授权'">
+					<el-form-item label="排序" prop="sort" :rules="[{ required: true, message: '排序不能为空', trigger: 'blur' }]">
+						<el-input-number v-model="drawerProps.row!.sort" placeholder="排序" class="w100" />
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-					<el-form-item label="排序" prop="orderNo" :rules="[{ required: true, message: '排序不能为空', trigger: 'blur' }]">
-						<el-input-number v-model="drawerProps.row!.orderNo" placeholder="排序" class="w100" />
-					</el-form-item>
-				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-					<el-form-item label="状态" prop="status" :rules="[{ required: true, message: '状态不能为空', trigger: 'blur' }]">
-						<el-radio-group v-model="drawerProps.row!.status">
-							<el-radio :value="1">启用</el-radio>
-							<el-radio :value="0">禁用</el-radio>
+				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" v-if="drawerProps.title != '授权'">
+					<el-form-item label="状态" prop="active" :rules="[{ required: true, message: '状态不能为空', trigger: 'blur' }]">
+						<el-radio-group v-model="drawerProps.row!.active">
+							<el-radio :value="true">启用</el-radio>
+							<el-radio :value="false">禁用</el-radio>
 						</el-radio-group>
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-if="drawerProps.title != '授权'">
 					<el-form-item label="备注">
-						<el-input v-model="drawerProps.row!.remark" placeholder="请输入备注内容" clearable type="textarea" />
+						<el-input v-model="drawerProps.row!.description" placeholder="请输入备注内容" clearable type="textarea" />
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24"  v-if="drawerProps.title == '授权'">
 					<el-form-item label="菜单权限" v-loading="state.loading">
 						<el-tree
 							ref="treeRef"

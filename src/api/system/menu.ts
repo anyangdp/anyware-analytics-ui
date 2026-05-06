@@ -6,7 +6,7 @@ import type { MenuEditReq, MenuListReq, MenuListRes } from '@/api/system/interfa
  * @param params {MenuListReq} 职位请求参数
  */
 export const listMenu = (params: MenuListReq) => {
-	return http.get<MenuListRes[]>('/api/sys/menu/list', params)
+	return http.post<MenuListRes[]>('/s/permission/list', params)
 }
 
 /**
