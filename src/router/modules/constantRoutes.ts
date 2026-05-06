@@ -201,17 +201,17 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 		},
 		children: [
 			{
+				path: '/setting/user',
+				component: () => import('@/views/System/User/Index.vue'),
+				name: 'SystemUser',
+				meta: { title: '用户管理', icon: 'pi-ant-design:user-outlined' }
+			},
+			{
 				path: '/setting/role',
 				component: () => import('@/views/System/Role/Index.vue'),
-				name: 'DataWareHouseApi',
-				meta: { title: '角色', icon: 'pi-ant-design:api-outlined' }
-			},
-			// {
-			// 	path: '/data/warehouse/api',
-			// 	component: () => import('@/views/BigData/DataWarehouse/Api/Index.vue'),
-			// 	name: 'DataWareHouseApi',
-			// 	meta: { title: '数据资产', icon: 'pi-ant-design:api-outlined' }
-			// }
+				name: 'SystemRole',
+				meta: { title: '角色管理', icon: 'pi-ant-design:api-outlined' }
+			}
 		]
 	}
 ]
