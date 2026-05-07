@@ -6,41 +6,52 @@ import type { MenuListRes } from '@/api/system/interfaces/menu.interface'
 import { FORM_LABEL_POSITION, FORM_SIZE } from '@/recursos/constantes/app.constant'
 import PureIconPicker from '@/components/PureIconPicker/PureIconPicker.vue'
 
-/**
- * @description drawer 是否显示
- */
 const drawerVisible = ref(false)
 
-/**
- * @description 表单实例
- */
 const ruleFormRef = ref<FormInstance>()
 
-/**
- * @description 定义接收参数
- */
 const drawerProps = ref<DrawerProps<MenuListRes>>({
 	isView: false,
 	title: '',
 	row: {}
 })
 
-/**
- * @description 接收父组件传过来的参数
- */
 const acceptParams = (params: DrawerProps<MenuListRes>) => {
 	drawerProps.value = params
 	drawerVisible.value = true
 }
 
-/**
- * @description 表单验证规则
- */
-const rules = reactive({})
+const findMenuById = (menus: MenuListRes[], id: string): MenuListRes | null => {
+	for (const menu of menus) {
+		if (menu.id === id) return menu
+		if (menu.children && menu.children.length > 0) {
+			const found = findMenuById(menu.children, id)
+			if (found) return found
+		}
+	}
+	return null
+}
 
-/**
- * @description 提交表单
- */
+watch(
+	() => drawerProps.value.row!.parentId,
+	newVal => {
+		if (!newVal) {
+			drawerProps.value.row!.level = 1
+		} else {
+			const parentMenu = findMenuById(drawerProps.value.data as MenuListRes[], newVal)
+			if (parentMenu) {
+				drawerProps.value.row!.level = (parentMenu.level || 1) + 1
+			}
+		}
+	}
+)
+
+const rules = reactive({
+	name: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
+	type: [{ required: true, message: '菜单类型不能为空', trigger: 'blur' }],
+	title: [{ required: true, message: '标题不能为空', trigger: 'blur' }]
+})
+
 const handleSubmit = () => {
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) return
@@ -55,9 +66,6 @@ const handleSubmit = () => {
 	})
 }
 
-/**
- * @description 导出接收参数方法
- */
 defineExpose({
 	acceptParams
 })
@@ -75,51 +83,46 @@ defineExpose({
 			:hide-required-asterisk="drawerProps.isView"
 		>
 			<el-row :gutter="35">
+				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+					<el-form-item label="菜单类型" prop="type">
+						<el-radio-group v-model="drawerProps.row!.type">
+							<el-radio :value="0">顶部菜单</el-radio>
+							<el-radio :value="1">页面</el-radio>
+							<el-radio :value="2">具体操作</el-radio>
+						</el-radio-group>
+					</el-form-item>
+				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 					<el-form-item label="上级菜单">
 						<el-cascader
 							:options="drawerProps.data as CascaderOption[] | undefined"
-							:props="{ checkStrictly: true, emitPath: false, value: 'id', label: 'title' }"
-							placeholder="请选择上级菜单"
+							:props="{ checkStrictly: true, emitPath: false, value: 'id', label: 'name' }"
+							placeholder="请选择上级菜单（一级菜单无需选择）"
 							clearable
 							class="w100"
-							v-model="drawerProps.row!.pid"
+							v-model="drawerProps.row!.parentId"
 						>
 							<template #default="{ node, data }">
-								<span>{{ data.title }}</span>
+								<span>{{ data.name }}</span>
 								<span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
 							</template>
 						</el-cascader>
 					</el-form-item>
 				</el-col>
-				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="菜单类型" prop="type" :rules="[{ required: true, message: '菜单类型不能为空', trigger: 'blur' }]">
-						<el-radio-group v-model="drawerProps.row!.type">
-							<el-radio :value="1">目录</el-radio>
-							<el-radio :value="2">菜单</el-radio>
-							<el-radio :value="3">按钮</el-radio>
-						</el-radio-group>
+				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+					<el-form-item label="菜单名称" prop="name">
+						<el-input v-model="drawerProps.row!.name" placeholder="菜单名称" clearable />
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-					<el-form-item label="菜单名称" prop="title" :rules="[{ required: true, message: '菜单名称不能为空', trigger: 'blur' }]">
-						<el-input v-model="drawerProps.row!.title" placeholder="菜单名称" clearable />
+					<el-form-item label="标题" prop="title">
+						<el-input v-model="drawerProps.row!.title" placeholder="标题（面包屑使用）" clearable />
 					</el-form-item>
 				</el-col>
-				<template v-if="drawerProps.row!.type === 1 || drawerProps.row!.type === 2">
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="路由名称">
-							<el-input v-model="drawerProps.row!.name" placeholder="路由名称" clearable />
-						</el-form-item>
-					</el-col>
+				<template v-if="drawerProps.row!.type === 0 || drawerProps.row!.type === 1">
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 						<el-form-item label="路由路径">
 							<el-input v-model="drawerProps.row!.path" placeholder="路由路径" clearable />
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="组件路径">
-							<el-input v-model="drawerProps.row!.component" placeholder="组件路径" clearable />
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -128,76 +131,34 @@ defineExpose({
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="重定向">
-							<el-input v-model="drawerProps.row!.redirect" placeholder="重定向地址" clearable />
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="链接地址">
-							<el-input v-model="drawerProps.row!.outLink" placeholder="外链/内嵌时链接地址" clearable />
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 						<el-form-item label="菜单排序">
-							<el-input-number v-model="drawerProps.row!.orderNo" placeholder="排序" class="w100" />
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="是否隐藏">
-							<el-radio-group v-model="drawerProps.row!.isHide">
-								<el-radio :value="true">隐藏</el-radio>
-								<el-radio :value="false">不隐藏</el-radio>
-							</el-radio-group>
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="是否缓存">
-							<el-radio-group v-model="drawerProps.row!.isKeepAlive">
-								<el-radio :value="true">缓存</el-radio>
-								<el-radio :value="false">不缓存</el-radio>
-							</el-radio-group>
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="是否固定">
-							<el-radio-group v-model="drawerProps.row!.isAffix">
-								<el-radio :value="true">固定</el-radio>
-								<el-radio :value="false">不固定</el-radio>
-							</el-radio-group>
-						</el-form-item>
-					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="是否内嵌">
-							<el-radio-group v-model="drawerProps.row!.isIframe">
-								<el-radio :value="true">内嵌</el-radio>
-								<el-radio :value="false">不内嵌</el-radio>
-							</el-radio-group>
+							<el-input-number v-model="drawerProps.row!.sort" placeholder="排序" class="w100" />
 						</el-form-item>
 					</el-col>
 				</template>
-				<template v-if="drawerProps.row!.type === 3">
+				<template v-if="drawerProps.row!.type === 2">
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="权限标识">
-							<el-input v-model="drawerProps.row!.permission" placeholder="权限标识" clearable />
+						<el-form-item label="菜单排序">
+							<el-input-number v-model="drawerProps.row!.sort" placeholder="排序" class="w100" />
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-						<el-form-item label="菜单排序">
-							<el-input-number v-model="drawerProps.row!.orderNo" placeholder="排序" class="w100" />
+						<el-form-item label="HTTP方法">
+							<el-input v-model="drawerProps.row!.httpMethod" placeholder="GET/POST/PUT/DELETE" clearable />
 						</el-form-item>
 					</el-col>
 				</template>
 				<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-					<el-form-item label="是否启用">
-						<el-radio-group v-model="drawerProps.row!.status">
-							<el-radio :value="1">启用</el-radio>
-							<el-radio :value="0">不启用</el-radio>
+					<el-form-item label="是否总是显示">
+						<el-radio-group v-model="drawerProps.row!.showAlways">
+							<el-radio :value="0">不显示</el-radio>
+							<el-radio :value="1">显示</el-radio>
 						</el-radio-group>
 					</el-form-item>
 				</el-col>
 				<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-					<el-form-item label="备注">
-						<el-input v-model="drawerProps.row!.remark" placeholder="请输入备注内容" clearable type="textarea" />
+					<el-form-item label="描述">
+						<el-input v-model="drawerProps.row!.description" placeholder="请输入描述内容" clearable type="textarea" />
 					</el-form-item>
 				</el-col>
 			</el-row>

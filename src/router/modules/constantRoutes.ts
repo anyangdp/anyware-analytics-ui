@@ -211,6 +211,12 @@ export const constantBusinessRouterMap: RouteRecordRaw[] = [
 				component: () => import('@/views/System/Role/Index.vue'),
 				name: 'SystemRole',
 				meta: { title: '角色管理', icon: 'pi-ant-design:api-outlined' }
+			},
+			{
+				path: '/setting/menu',
+				component: () => import('@/views/System/Menu/Index.vue'),
+				name: 'SystemMenu',
+				meta: { title: '菜单管理', icon: 'pi-ant-design:menu-outlined' }
 			}
 		]
 	}

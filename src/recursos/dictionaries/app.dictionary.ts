@@ -39,9 +39,9 @@ export const userAccountTypeDic = [
  * @description 菜单类型
  */
 export const menuTypeDic = [
-	{ label: '目录', value: 1, tagType: 'warning' },
-	{ label: '菜单', value: 2, tagType: 'primary' },
-	{ label: '按钮', value: 3, tagType: 'info' }
+	{ label: '顶部菜单', value: 0, tagType: 'warning' },
+	{ label: '页面', value: 1, tagType: 'primary' },
+	{ label: '具体操作', value: 2, tagType: 'info' }
 ]
 
 /**
