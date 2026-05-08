@@ -1,7 +1,9 @@
 <script setup lang="tsx">
+import { ref, reactive } from 'vue'
 import { useHandleData } from '@/hooks/useHandleData'
 import PureTable from '@/components/PureTable/PureTable.vue'
 import UserDrawer from '@/views/System/User/components/UserDrawer.vue'
+
 import type { DrawerProps } from '@/recursos/interfaces/app.interface'
 import type { UserDTO } from '@/api/system/interfaces/user.interface'
 import type { PureTableInstance } from '@/components/PureTable/types/pureTable.type'
@@ -51,8 +53,64 @@ const del = async (params: UserDTO) => {
 }
 
 const resetUserPwd = async (params: UserDTO) => {
-	await useHandleData(resetPassword, { id: params.id!, newPassword: '123456' }, `重置【${params.nickname}】密码`)
-	pureTable.value?.getTableList()
+	const newPassword = ref('')
+	const validatePassword = (pwd: string): { valid: boolean; message: string } => {
+		if (!pwd) {
+			return { valid: false, message: '请输入新密码' }
+		}
+		if (pwd.length < 8) {
+			return { valid: false, message: '新密码至少8位' }
+		}
+		const hasUpper = /[A-Z]/.test(pwd)
+		const hasLower = /[a-z]/.test(pwd)
+		const hasNumber = /\d/.test(pwd)
+		const hasSpecial = /[@$!%*?&]/.test(pwd)
+		const typesCount = [hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length
+		if (typesCount < 3) {
+			return { valid: false, message: '新密码需包含大小写字母、数字、特殊符号中的三种以上' }
+		}
+		return { valid: true, message: '' }
+	}
+	const inputDialog = await ElMessageBox({
+		title: `重置【${params.nickname}】密码`,
+		message: `
+			<div style="padding: 10px;">
+				<label style="display: block; margin-bottom: 8px; font-weight: 500;">新密码</label>
+				<input 
+					id="reset-pwd-input"
+					type="password" 
+					placeholder="请输入新密码" 
+					style="width: 100%; padding: 8px; border: 1px solid #dcdfe6; border-radius: 4px; box-sizing: border-box;"
+				/>
+				<p style="margin-top: 8px; font-size: 12px; color: #909399;">
+					密码规则：至少8位，包含大小写字母、数字、特殊符号中的三种以上
+				</p>
+			</div>
+		`,
+		showCancelButton: true,
+		confirmButtonText: '确认重置',
+		cancelButtonText: '取消',
+		dangerouslyUseHTMLString: true,
+		beforeClose: async (action, instance, done) => {
+			if (action === 'confirm') {
+				const input = document.getElementById('reset-pwd-input') as HTMLInputElement
+				if (input) {
+					newPassword.value = input.value
+					const result = validatePassword(newPassword.value)
+					if (!result.valid) {
+						ElMessage.error(result.message)
+						done(false)
+						return
+					}
+				}
+			}
+			done()
+		}
+	}).catch(() => {})
+	if (inputDialog === 'confirm') {
+		await useHandleData(resetPassword, { id: params.id!, newPassword: newPassword.value }, `重置【${params.nickname}】密码`)
+		pureTable.value?.getTableList()
+	}
 }
 
 const changeStatus = async (row: UserDTO) => {
